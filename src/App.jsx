@@ -16,9 +16,9 @@ function App() {
     setInterval(()=>{
         setDateHour({
             ...datehour,
-            heure: newDate.getHours(),
-            minutes: newDate.getMinutes(),
-            seconds: newDate.getSeconds(),
+            heure: new Date().getHours(),
+            minutes: new Date().getMinutes(),
+            seconds: new Date().getSeconds(),
         });
     },1000)
     return (
@@ -47,6 +47,9 @@ function App() {
                     </motion.h3>
                     <p>
                         {datehour.jour}/{datehour.mois}/{datehour.année}
+                    </p>
+                    <p>
+                        {datehour.heure}:{datehour.minutes}:{datehour.seconds}
                     </p>
                 </div>
                 <div
