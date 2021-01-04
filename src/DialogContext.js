@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { getMeteoForCity } from "./services/meteo";
+import { getMeteoForCity, getMeteoForCityFake } from "./services/meteo";
 
 export const DialogContext = createContext();
 
@@ -13,27 +13,27 @@ export const DialogProvider = ({ children }) => {
     const [dialogs, setDialogs] = useState(initialState.dialogs);
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
-    const getMeteo = (city,msg="") => {
+    const getMeteo = async (city, msg = "") => {
         console.log("city ", city);
         setLoading(true);
         closeMeteo();
-        getMeteoForCity(city)
-            .then((response) => {
-                const { data } = response;
-                console.log("response", data);
-                sendRequest(msg)
-                replyUser(`Meteo à ${data.name}: 
+
+        try {
+            const response = await getMeteoForCityFake(city);
+            const data = response;
+            console.log("response", data);
+            replyUser(
+                `Meteo à ${data.name}: 
                 Température ${Math.floor(data.main.temp)}° C,  ${
                     data.weather[0].description
-                }
-            `);
-                setLoading(false);
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.error(error);
-            });
-        return city;
+                }`
+            );
+            setLoading(false);
+            return response;
+        } catch (error) {
+            setLoading(false);
+            console.error(error);
+        }
     };
     const askForMeteo = () => {
         setMeteo(true);
@@ -41,27 +41,28 @@ export const DialogProvider = ({ children }) => {
     const closeMeteo = () => {
         setMeteo(false);
     };
-    const pushMessage = (msg="",user=true) => {
-        setDialogs(dialogs.concat([{ msg, id:dialogs.length, user }]));
-    }
+    const pushMessage = (msg = "", user = true) => {
+        setDialogs((prevState)=>[...prevState, { msg, id: prevState.length, user }]);
+    };
     const sendRequest = (msg = "") => {
         if (msg.length <= 0) return;
-        pushMessage(msg)
+        pushMessage(msg);
     };
     const replyUser = (msg = "") => {
         if (msg.length <= 0) return;
-        pushMessage(msg,false)
+        pushMessage(msg, false);
     };
     return (
         <DialogContext.Provider
             value={{
                 sendRequest,
-                id:dialogs.length,
+                id: dialogs.length,
                 dialogs,
                 city: initialState.city,
                 getMeteo,
                 meteoDialog,
                 askForMeteo,
+                replyUser,
                 closeMeteo,
                 loading,
             }}

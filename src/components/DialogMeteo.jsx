@@ -5,14 +5,20 @@ import { css } from "@emotion/css";
 import { ActionButton, ActionButtonList } from "./ActionButton.jsx";
 
 const DialogMeteo = ({ children }) => {
-    const { city, getMeteo, askForMeteo, closeMeteo, meteoDialog } = useContext(
-        DialogContext
-    );
+    const {
+        city,
+        getMeteo,
+        askForMeteo,
+        closeMeteo,
+        meteoDialog,
+        sendRequest,
+    } = useContext(DialogContext);
 
     const sinp = useRef(null);
 
     const searchForMeteo = () => {
-        getMeteo(sinp.current.value);
+        const city = sinp.current.value;
+        getMeteo();
         closeMeteo();
     };
     return (
@@ -34,7 +40,12 @@ const DialogMeteo = ({ children }) => {
                         city.map((value, index) => (
                             <ActionButton
                                 key={"meteo-city-" + index}
-                                onClick={() => getMeteo(value)}
+                                onClick={() => {
+                                    sendRequest(
+                                        `Je voudrais savoir la météo à ${value}`
+                                    );
+                                    getMeteo(value);
+                                }}
                             >
                                 {value}
                             </ActionButton>
