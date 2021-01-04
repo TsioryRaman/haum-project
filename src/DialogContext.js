@@ -13,8 +13,7 @@ export const DialogProvider = ({ children }) => {
     const [dialogs, setDialogs] = useState(initialState.dialogs);
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
-    const [id, setId] = useState(initialState.dialogs.length);
-    const getMeteo = (city) => {
+    const getMeteo = (city,msg="") => {
         console.log("city ", city);
         setLoading(true);
         closeMeteo();
@@ -22,6 +21,7 @@ export const DialogProvider = ({ children }) => {
             .then((response) => {
                 const { data } = response;
                 console.log("response", data);
+                sendRequest(msg)
                 replyUser(`Meteo à ${data.name}: 
                 Température ${Math.floor(data.main.temp)}° C,  ${
                     data.weather[0].description
@@ -41,21 +41,22 @@ export const DialogProvider = ({ children }) => {
     const closeMeteo = () => {
         setMeteo(false);
     };
+    const pushMessage = (msg="",user=true) => {
+        setDialogs(dialogs.concat([{ msg, id:dialogs.length, user }]));
+    }
     const sendRequest = (msg = "") => {
         if (msg.length <= 0) return;
-        setDialogs(dialogs.concat([{ msg, id, user: true }]));
-        setId(id + 1);
+        pushMessage(msg)
     };
     const replyUser = (msg = "") => {
         if (msg.length <= 0) return;
-        setDialogs(dialogs.concat([{ msg, id, user: false }]));
-        setId(id + 1);
+        pushMessage(msg,false)
     };
     return (
         <DialogContext.Provider
             value={{
                 sendRequest,
-                id,
+                id:dialogs.length,
                 dialogs,
                 city: initialState.city,
                 getMeteo,

@@ -49,8 +49,8 @@ export const Dialog = () => {
         },
         {
             command: "Je voudrais savoir la météo * *",
-            callback: (pronom,city,{command}) => {
-                getMeteo(city);
+            callback: (pronom,city,{command,finalTranscript}) => {
+                getMeteo(city,finalTranscript);
                 console.log('command', command)
             },
         },
@@ -64,7 +64,8 @@ export const Dialog = () => {
     const { transcript, listening,finalTranscript } = reco;
     useEffect(()=>{
         const msg =finalTranscript;
-        sendRequest(msg);
+        console.log('finalTranscript', finalTranscript)
+        sendRequest(finalTranscript);
     },[finalTranscript])
     return (
         <>
