@@ -13,14 +13,6 @@ function App() {
         minutes: newDate.getMinutes(),
         seconds: newDate.getSeconds(),
     });
-    setInterval(()=>{
-        setDateHour({
-            ...datehour,
-            heure: new Date().getHours(),
-            minutes: new Date().getMinutes(),
-            seconds: new Date().getSeconds(),
-        });
-    },1000)
     return (
         <>
             <div

@@ -7,7 +7,7 @@ const initialState = {
     dialogs: [
         { msg: "En quoi puis-je vous aider aujourd'hui?", id: 0, user: false },
     ],
-    city: ["Antananarivo", "Majunga", "Paris"],
+    city: ["Antananarivo", "Mahajanga", "Paris"],
 };
 export const DialogProvider = ({ children }) => {
     const [dialogs, setDialogs] = useState(initialState.dialogs);
@@ -20,10 +20,12 @@ export const DialogProvider = ({ children }) => {
         closeMeteo();
         getMeteoForCity(city)
             .then((response) => {
-                const {data} = response;
+                const { data } = response;
                 console.log("response", data);
                 replyUser(`Meteo à ${data.name}: 
-                Température ${Math.floor(data.main.temp)}° C,  ${data.weather[0].description}
+                Température ${Math.floor(data.main.temp)}° C,  ${
+                    data.weather[0].description
+                }
             `);
                 setLoading(false);
             })
@@ -40,14 +42,14 @@ export const DialogProvider = ({ children }) => {
         setMeteo(false);
     };
     const sendRequest = (msg = "") => {
-        setId(id + 1);
         if (msg.length <= 0) return;
         setDialogs(dialogs.concat([{ msg, id, user: true }]));
+        setId(id + 1);
     };
     const replyUser = (msg = "") => {
-        setId(id + 1);
         if (msg.length <= 0) return;
         setDialogs(dialogs.concat([{ msg, id, user: false }]));
+        setId(id + 1);
     };
     return (
         <DialogContext.Provider

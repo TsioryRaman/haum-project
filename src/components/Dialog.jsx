@@ -1,73 +1,75 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext,  useEffect,  useRef } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
-import { ActionButton, ActionButtonList } from "./ActionButton.jsx";
+import DialogMeteo from "./DialogMeteo";
+import SpeechRecognition, {
+    useSpeechRecognition,
+} from "react-speech-recognition";
 
-const DialogMeteo = ({ children }) => {
-    const { city, getMeteo, askForMeteo, closeMeteo, meteoDialog } = useContext(
-        DialogContext
-    );
-
-    const sinp = useRef(null);
-
-    const searchForMeteo = () => {
-        getMeteo(sinp.current.value);
-        closeMeteo();
-    };
+const Msg = ({ children, user = true }) => {
     return (
-        <>
-            <ActionButtonList>
-                {!meteoDialog ? (
-                    <ActionButton onClick={askForMeteo}>
-                        Search for meteo
-                    </ActionButton>
-                ) : (
-                    <ActionButton onClick={closeMeteo}>
-                        Close meteo
-                    </ActionButton>
-                )}
-            </ActionButtonList>
-            <AnimatePresence>
-                <ActionButtonList>
-                    {meteoDialog &&
-                        city.map((value, index) => (
-                            <ActionButton
-                                key={"meteo-city-" + index}
-                                onClick={() => getMeteo(value)}
-                            >
-                                {value}
-                            </ActionButton>
-                        ))}
-                </ActionButtonList>
-                {meteoDialog && (
-                    <motion.div
-                        exit={{ opacity: 0, x: -30 }}
-                        initial={{ opacity: 0, x: 80 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        key={"input-city"}
-                        className={css({ margin: 10 })}
-                    >
-                        <input type="text" ref={sinp} placeholder="Ville" />
-                        <button onClick={searchForMeteo}>Chercher</button>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </>
+        <motion.p
+            className={css({
+                width: "600px",
+                margin: "10px 0",
+                fontSize: 32,
+                paddingBottom: 10,
+                textAlign: user ? "right" : "left",
+            })}
+            initial={{ opacity: 0, y: "80px" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "-80px" }}
+            transition={{ duration: 0.5 }}
+        >
+            {children}
+        </motion.p>
     );
 };
 
 export const Dialog = () => {
-    const { dialogs, sendRequest, id,loading } = useContext(DialogContext);
+    const { dialogs, sendRequest, getMeteo,id, loading } = useContext(DialogContext);
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
         inp.current.value = null;
     };
+    const commands = [
+        {
+            command: "*",
+            callback: (standard) => {
+                console.log('standard', standard);
+            }
+        },
+        {
+            command: "Salut",
+            callback: ({command}) => {
+                console.log('command', command)
+            },
+        },
+        {
+            command: "Je voudrais savoir la météo * *",
+            callback: (pronom,city,{command}) => {
+                getMeteo(city);
+                console.log('command', command)
+            },
+        },
+    ];
+    if (!SpeechRecognition.browserSupportsSpeechRecognition())
+        console.log("browser is not supporting");
+    const reco = useSpeechRecognition({
+        language: "fr-FR",
+        commands,
+    });
+    const { transcript, listening,finalTranscript } = reco;
+    useEffect(()=>{
+        const msg =finalTranscript;
+        sendRequest(msg);
+    },[finalTranscript])
     return (
         <>
             <AnimatePresence>
-                {dialogs.slice(id <= 3 ? 0 : id - 3).map((value) => (
+                {dialogs.slice(id<4?0:id-3).map((value) => (
                     <motion.p
                         className={css({
                             width: "600px",
@@ -85,24 +87,9 @@ export const Dialog = () => {
                         {value.msg}
                     </motion.p>
                 ))}
-                {loading && (
-                    <motion.p
-                        className={css({
-                            width: "600px",
-                            margin: "10px 0",
-                            fontSize: 32,
-                            paddingBottom: 10,
-                            textAlign: "left"
-                        })}
-                        initial={{ opacity: 0, y: "80px" }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: "-80px" }}
-                        transition={{ duration: 0.5 }}
-                        key={"i-search"}
-                    >
-                        Je cherche...
-                    </motion.p>
-                )}
+                {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
+                {listening && <Msg key={"im-listening"} user={false}>Je vous écoute</Msg>}
+                {listening && <Msg key={"transcripting"}>{transcript}</Msg>}
             </AnimatePresence>
             <div className={css({ margin: 10 })}>
                 <input
@@ -111,6 +98,16 @@ export const Dialog = () => {
                     placeholder="Je voudrais savoir la météo."
                 />
                 <button onClick={onClick}>Envoyer</button>
+                <button
+                    onClick={() => {
+                        SpeechRecognition.startListening({ language: "fr-FR" });
+                    }}
+                >
+                    Ecouter
+                </button>
+                <button onClick={() => SpeechRecognition.stopListening()}>
+                    Arreter
+                </button>
             </div>
             <DialogMeteo />
         </>
