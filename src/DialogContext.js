@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 import { getMeteoForCity, getMeteoForCityFake } from "./services/meteo";
-
+import {useSpeechSynthesis} from "react-speech-kit"
 export const DialogContext = createContext();
 
 const initialState = {
@@ -13,6 +13,7 @@ export const DialogProvider = ({ children }) => {
     const [dialogs, setDialogs] = useState(initialState.dialogs);
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
+    const {speak} = useSpeechSynthesis();
     const getMeteo = async (city, msg = "") => {
         console.log("city ", city);
         setLoading(true);
@@ -50,6 +51,9 @@ export const DialogProvider = ({ children }) => {
     };
     const replyUser = (msg = "") => {
         if (msg.length <= 0) return;
+        speak({
+            text:msg
+        })
         pushMessage(msg, false);
     };
     return (

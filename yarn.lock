@@ -5313,6 +5313,11 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+google-translate-tts@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/google-translate-tts/-/google-translate-tts-0.3.0.tgz#84b60d9f2dbf20351d5f9977699aa5075af822db"
+  integrity sha512-iEcjxILE+4rS1gmsRJcaJ7lW0xvYvtCW4ywONbA5nR1zuBZxaFiIuePeEjZ6m0ytNzkjjD6BlbvjORXWyJtcVg==
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
@@ -9068,6 +9073,11 @@ react-scripts@^4.0.1:
     workbox-webpack-plugin "5.1.4"
   optionalDependencies:
     fsevents "^2.1.3"
+
+react-speech-kit@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-speech-kit/-/react-speech-kit-3.0.1.tgz#8bd936adfe064be1c5a07e2992dfdfd772e80d14"
+  integrity sha512-MXNOciISanhmnxpHJkBOev3M3NPDpW1T7nTc/eGw5pO9cXpoUccRxZkmr/IlpTPbPEneDNeTmbwri/YweyctZg==
 
 react-speech-recognition@^3.6.0:
   version "3.6.0"
