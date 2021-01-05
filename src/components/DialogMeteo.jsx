@@ -2,6 +2,7 @@ import React, { useContext, useRef } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
+import "bootstrap/dist/css/bootstrap.min.css"
 import { ActionButton, ActionButtonList } from "./ActionButton.jsx";
 
 const DialogMeteo = ({ children }) => {
@@ -26,11 +27,11 @@ const DialogMeteo = ({ children }) => {
             <ActionButtonList>
                 {!meteoDialog ? (
                     <ActionButton onClick={askForMeteo}>
-                        Search for meteo
+                        Chercher la m&eacute;t&eacute;o à ...
                     </ActionButton>
                 ) : (
                     <ActionButton onClick={closeMeteo}>
-                        Close meteo
+                        Fermer la m&eacute;t&eacute;o
                     </ActionButton>
                 )}
             </ActionButtonList>
@@ -60,11 +61,12 @@ const DialogMeteo = ({ children }) => {
                         className={css({ margin: 10 })}
                     >
                         <input
+                            className={"form-control"}
                             type="text"
                             ref={sinp}
                             placeholder="Ville (Nom d'origine ex:Antananrivo,London,Toamasina) "
                         />
-                        <button onClick={searchForMeteo}>Chercher</button>
+                        <button className={"btn btn-info mt-3"} onClick={searchForMeteo}>Chercher</button>
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -7,18 +7,8 @@ export function ActionButton({children, onClick}) {
     return <motion.button
         onClick={onClick}
         variants={fadeInUp}
-        className={css({
-            margin: 2,
-            border: "solid white 1px",
-            color: "white",
-            backgroundColor: "rgba(111,134,214,0.68)",
-            padding: 10,
-            borderRadius: 13,
-            fontSize: 32,
-            ":hover": {
-                backgroundColor: "#6f86d6",
-            }
-        })}
+        className={"btn btn-block btn-dark"}
+        style={{padding:"12px"}}
     >
         {children}
     </motion.button>

@@ -1,0 +1,56 @@
+.container{
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+.open{
+    animation: show_animation 0.8s;
+    width: 50%;
+}
+.close {
+    width: 0;
+    animation: close_animation .8s;
+}
+.projectTitle{
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+.title{
+    text-decoration: underline;
+}
+.list_group{
+    list-style-type: none;
+}
+ul.list_group li {
+    font-size: 1em;
+}
+@keyframes close_animation {
+    0%  {
+        width: 50%;
+    }
+    100% {
+        width: 0%;
+    }
+}
+@keyframes show_animation {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 720px) {
+    .container{
+        margin-rigth: auto;
+    }
+    .contenu{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 100%;
+        padding: 25px 15px 25px 15px;
+    }
+}
