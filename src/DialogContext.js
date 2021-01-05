@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { getMeteoForCity, getMeteoForCityFake } from "./services/meteo";
+import { getMeteoForCity } from "./services/meteo";
 import {useSpeechSynthesis} from "react-speech-kit"
 export const DialogContext = createContext();
 
@@ -20,7 +20,7 @@ export const DialogProvider = ({ children }) => {
         closeMeteo();
 
         try {
-            const response = await getMeteoForCityFake(city);
+            const response = await getMeteoForCity(city);
             const data = response;
             console.log("response", data);
             replyUser(

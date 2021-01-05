@@ -1,5 +1,4 @@
 import React, { useState, useLayoutEffect } from "react";
-import {css} from "@emotion/css";
 import {motion} from "framer-motion";
 import {Dialog} from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
@@ -25,7 +24,7 @@ function App() {
 
     useLayoutEffect(()=> {
         setTimeout(() => {
-            newDate = new Date()
+            const newDate = new Date();
             setDateHour({
                 jour: setTime(newDate.getDate()),
                 mois: setTime(newDate.getMonth() + 1) ,

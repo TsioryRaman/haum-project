@@ -19,7 +19,7 @@ const DialogMeteo = ({ children }) => {
 
     const searchForMeteo = () => {
         const city = sinp.current.value;
-        getMeteo();
+        getMeteo(city);
         closeMeteo();
     };
     return (
