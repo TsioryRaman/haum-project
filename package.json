@@ -33,6 +33,7 @@
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.1",
     "react-speech-kit": "^3.0.1",
-    "react-speech-recognition": "^3.6.0"
+    "react-speech-recognition": "^3.6.0",
+    "seven-segment-display": "^0.2.0"
   }
 }

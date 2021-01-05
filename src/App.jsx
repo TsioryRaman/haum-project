@@ -3,6 +3,10 @@ import {css} from "@emotion/css";
 import {motion} from "framer-motion";
 import {Dialog} from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
+import style from "./assets/App.module.css";
+
+// 7 SEGMENT
+import SevenSegmentDisplay from 'seven-segment-display';
 
 const setTime =  number => number < 10 ? "0"+number : number
 
@@ -59,8 +63,8 @@ function App() {
                         <p className={"text-right mt-4"} style={{fontSize:"3em"}}>
                             {datehour.jour} / {datehour.mois} / {datehour.année}
                         </p>
-                        <p className={"text-right mt-4"} style={{fontSize:"3em"}}>
-                            {datehour.heure}:{datehour.minutes}:{datehour.seconds}
+                        <p className={`text-right mt-4 ${style.digit}`}  style={{height:"100px",fontSize:"3em"}}>
+                            <SevenSegmentDisplay color={"#FFF"}  digitCount={2} value={datehour.heure}/>:<SevenSegmentDisplay color={"#FFF"} value={datehour.minutes} digitCount={2}/>:<SevenSegmentDisplay color={"#FFF"} value={datehour.seconds} digitCount={2}/>
                         </p>
                         <div className="row">
                             <button className="btn btn-light" onClick={() => showInfo()} style={{marginLeft:"auto"}}>
