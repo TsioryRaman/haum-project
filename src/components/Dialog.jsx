@@ -27,11 +27,10 @@ const Msg = ({ children, user = true }) => {
 };
 
 export const Dialog = () => {
-    const { dialogs, sendRequest, getMeteo,id, loading,replyUser } = useContext(DialogContext);
+    const { dialogs, sendRequest, getMeteo,id, loading } = useContext(DialogContext);
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
-        replyUser("hello")
         inp.current.value = null;
     };
     const commands = [
@@ -63,7 +62,6 @@ export const Dialog = () => {
         language: "fr-FR",
         commands})
     useEffect(()=>{
-        const msg = finalTranscript;
         console.log('finalTranscript' + finalTranscript)
         sendRequest(finalTranscript);
     },[finalTranscript])
