@@ -1,10 +1,9 @@
 import React from 'react';
-import style from  "../../assets/Projectinfo.module.css"
-import "bootstrap/dist/css/bootstrap.min.css"
+import style from "../../assets/Projectinfo.module.css"
 
 
-const Projectinfo = ({info}) => {
-    return <div className={` ${style.container} ${info ? style.open : style.close }  plum_plate`}>
+const Projectinfo = ({ info }) => {
+    return <div className={` ${style.container} ${info ? style.open : style.close}  plum_plate`}>
         <div className={`${style.contenu} text-white`}>
             <h3 className={style.projectTitle}>
                 Projet : HAUM (Human's Machine)
