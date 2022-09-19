@@ -20,11 +20,11 @@ export const DialogProvider = ({ children }) => {
         closeMeteo();
 
         try {
-            const response = await getMeteoForCityFake(city);
-            const data = response;
+            const response = await getMeteoForCity(city);
+            const data = response.data
             console.log("response", data);
             replyUser(
-                `Meteo à ${data.name}: 
+                `Meteo à ${city}: 
                 Température ${Math.floor(data.main.temp)}° C,  ${
                     data.weather[0].description
                 }`
@@ -34,6 +34,9 @@ export const DialogProvider = ({ children }) => {
         } catch (error) {
             setLoading(false);
             console.error(error);
+            replyUser(
+                "Ville non pris en charge pour le moment"
+            );
         }
     };
     const askForMeteo = () => {

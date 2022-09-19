@@ -4,6 +4,7 @@ import {motion} from "framer-motion";
 import {Dialog} from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
 import style from "./assets/App.module.css";
+import { Settings,ChevronRight,ChevronLeft } from 'react-feather';
 
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
@@ -40,12 +41,16 @@ function App() {
     const showInfo = () => {setInfo(i => !i)}
     
     return (
-        <div style={{display:"flex",flexDirection:"row"}}>
+        <div
+            style={{overflow:"hidden",position:"relative"}}
+        >
             <div
                 className={"container"}
-                style={{minHeight: "100vh"}}
+                style={{minHeight: "100vh",overflowX:"hidden",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}
             >
-                <div className="row">
+                <div>
+                <h3 style={{fontSize:"8em"}} className={"text-white text-center"}>R<span className={`${style.rotate}`}><Settings size="0.8em"/></span>CC<Settings size="0.8em"/></h3>
+                <div className="row gx-5">
 
                     <div
                         className={"text-white col-sm-12 col-md-6 "}
@@ -57,20 +62,19 @@ function App() {
                             initial={{ opacity: 0, y: -80 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
+                            
                         >
-                            Je suis <span className={"text-danger"}>HAUM</span> votre assistant
+                            Je suis <span className={"text-info"}>R<Settings size="0.8em"/>CC<Settings size="0.8em"/></span> votre assistant
                         </motion.h1>
                         <p className={"text-right mt-4"} style={{fontSize:"3em"}}>
                             {datehour.jour} / {datehour.mois} / {datehour.année}
                         </p>
                         <p className={`text-right mt-4 ${style.digit}`}  style={{height:"100px",fontSize:"3em"}}>
-                            <SevenSegmentDisplay color={"#FFF"}  digitCount={2} value={datehour.heure}/>:<SevenSegmentDisplay color={"#FFF"} value={datehour.minutes} digitCount={2}/>:<SevenSegmentDisplay color={"#FFF"} value={datehour.seconds} digitCount={2}/>
+                            <SevenSegmentDisplay color={"red"}  digitCount={2} value={datehour.heure}/>:<SevenSegmentDisplay color={"red"} value={datehour.minutes} digitCount={2}/>:<SevenSegmentDisplay color={"red"} value={datehour.seconds} digitCount={2}/>
                         </p>
-                        <div className="row">
-                            <button className="btn btn-light" onClick={() => showInfo()} style={{marginLeft:"auto"}}>
-                                {!info ? "En savoir plus" : "Fermer" }
+                            <button className="btn btn-outline-light" onClick={() => showInfo()}>
+                                {!info ? "En savoir plus sur nous" : "Fermer" } {!info ? <ChevronRight /> :<ChevronLeft />}
                             </button>    
-                        </div>
                         
                     </div>
                     <div
@@ -80,7 +84,10 @@ function App() {
                         <Dialog />
                     </div>
                 </div>
+                </div>
+
             </div>
+
             <Projectinfo info={info}/>
         </div>
     );

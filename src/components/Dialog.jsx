@@ -91,8 +91,8 @@ export const Dialog = () => {
                 {listening && <Msg key={"im-listening"} user={false}>Je vous écoute</Msg>}
                 {listening && <Msg key={"transcripting"}>{transcript}</Msg>}
             </AnimatePresence>
-            <div className={css({ margin: 10 })}>
-                <div className="row no-gutters">
+            <div>
+                <div className="row">
                     <div className="col-sm-12 mb-2">
                         <input
                             type="text"
@@ -102,16 +102,13 @@ export const Dialog = () => {
                             placeholder={"Demander de l'aide ..."}
                         />
                     </div>
-                    <div className="col-xs-4 col-sm-4 mb-4 mt-2">
-                        <button className={"btn btn-success btn-block"}
+                    <div className="row no-gutters">
+                        <button className={"col-sm-4 mb-4 mt-2 btn btn-success btn-block"}
                                 onClick={onClick}
                                 style={{borderTopRightRadius:"0",borderBottomRightRadius:"0"}}
                         >Envoyer</button>
-
-                    </div>
-                    <div className="col-xs-4 col-sm-4 mb-4 mt-2">
                         <button
-                            className={"btn btn-info btn-block"}
+                            className={"col-sm-4 mb-4 mt-2 btn btn-outline-info btn-block"}
                             style={{borderRadius:"0"}}
                             onClick={async () => {
                                 await SpeechRecognition.startListening({ language: "fr-FR" });
@@ -120,15 +117,14 @@ export const Dialog = () => {
                         >
                             Ecouter
                         </button>
-                    </div>
-                    <div className="col-xs-4 col-sm-4 mb4 mt-2">
-                        <button className={"btn btn-danger btn-block"}
+                        <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
                                 onClick={() => SpeechRecognition.stopListening()}
                                 style={{borderTopLeftRadius:"0",borderBottomLeftRadius:"0"}}
                         >
                             Arreter
                         </button>
                     </div>
+                 
                 </div>
             </div>
             <DialogMeteo />

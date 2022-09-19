@@ -4,26 +4,25 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 
 const Projectinfo = ({info}) => {
-    return <div className={` ${style.container} ${info ? style.open : style.close }  plum_plate`}>
+    return <div className={` ${style.container} ${info ? style.open : style.close }`} style={{backdropFilter:"blur(8px)",zIndex:8}}>
         <div className={`${style.contenu} text-white`}>
             <h3 className={style.projectTitle}>
-                Projet : HAUM (Human's Machine)
+                Projet : ROCCO (Robot compagnon)
             </h3>
             <h6 className={style.title}>
                 Filière :
             </h6>
-            <p>Electronique Syteme Informatique et Intelligence Artificielle (ESSIA-3)</p>
+            <p>Electronique Syteme Informatique et Intelligence Artificielle (ESSIA-4)</p>
             <h6 className={style.title}>
                 Membre du groupe :
             </h6>
             <ul className={style.list_group}>
-                <li>Finaritra Haritiana</li>
-                <li>Carter</li>
-                <li>Francia</li>
+                <li>Didi</li>
                 <li>Tahiana</li>
-                <li>Toky</li>
                 <li>Tendry</li>
+                <li>Toky</li>
                 <li>Tsiory</li>
+                <li>Sitraka</li>
             </ul>
             <h6 className={style.title}>
                 Pr&eacute;s&eacute;ntation du projet

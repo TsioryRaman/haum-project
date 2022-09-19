@@ -1,15 +1,16 @@
 .container{
-    position: relative;
+    position: absolute;
     min-height: 100vh;
-    overflow: hidden;
+    width: 50%;
+    top:0;
+    right:0;
 }
 .open{
     animation: show_animation 0.8s;
-    width: 50%;
 }
 .close {
-    width: 0;
     animation: close_animation .8s;
+    margin-right: -100%;
 }
 .projectTitle{
     margin-top: 10px;
@@ -26,18 +27,18 @@ ul.list_group li {
 }
 @keyframes close_animation {
     0%  {
-        width: 50%;
+        margin-right: 0%;
     }
     100% {
-        width: 0%;
+        margin-right: -100%;
     }
 }
 @keyframes show_animation {
     0% {
-        width: 0;
+        margin-right: -100%;
     }
     100% {
-        width: 50%;
+        margin-right: 0%;
     }
 }
 
