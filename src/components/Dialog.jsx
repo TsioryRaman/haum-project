@@ -1,4 +1,4 @@
-import React, { useContext,  useEffect,  useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
@@ -6,6 +6,9 @@ import DialogMeteo from "./DialogMeteo";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
+
+import { useSpeechSynthesis } from "react-speech-kit"
+import BlaguesAPI from 'blagues-api';
 
 const Msg = ({ children, user = true }) => {
     return (
@@ -27,7 +30,10 @@ const Msg = ({ children, user = true }) => {
 };
 
 export const Dialog = () => {
-    const { dialogs, sendRequest, getMeteo,id, loading,replyUser } = useContext(DialogContext);
+
+    const { speak } = useSpeechSynthesis();
+    const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
+    const [listen, setListen] = useState(false)
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
@@ -38,39 +44,62 @@ export const Dialog = () => {
         {
             command: "*",
             callback: (standard) => {
-                console.log('standard'+ standard);
+                console.log('standard' + standard);
             }
         },
         {
             command: "Salut",
-            callback: ({command}) => {
+            callback: ({ command }) => {
                 console.log('command', command)
             },
         },
         {
-            command: "Je voudrais savoir la météo * *",
-            callback: (pronom,city,{command,finalTranscript}) => {
+            command: "* météo * *",
+            callback: (mot, pronom, city, { command, finalTranscript }) => {
                 getMeteo(city);
                 console.log('command', command)
             },
         },
+        {
+            command: "raconte-moi * blague",
+            callback: async () => {
+                const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiM21JTGN6MHFqVTBHbDIwYXc5ZHZCWEtuV3FYUVpMVDNMVlN1Sm5HYXN1R3FhT1NFQnAiLCJjcmVhdGVkX2F0IjoiMjAyMi0wOS0xOVQxNTo1NjoxNiswMDowMCIsImlhdCI6MTY2MzYwMjk3Nn0.JSklGHX-0VhvOOVogkqyMte_XtOGHuQCvYUc7l7w-po");
+
+                const d = await blague.random({
+                    disallow: [
+                        blague.categories.DARK,
+                        blague.categories.LIMIT
+                    ]
+                })
+                speak({ text: d.joke })
+
+                speak({ text: d.answer })
+            }
+        }
     ];
-    
-    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {console.log("browser is not supporting")}
+
+    if (!SpeechRecognition.browserSupportsSpeechRecognition()) { console.log("browser is not supporting") }
 
 
-    const { transcript, listening,finalTranscript } = useSpeechRecognition({
+    const { transcript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
-        commands})
-    useEffect(()=>{
-        const msg = finalTranscript;
-        console.log('finalTranscript' + finalTranscript)
+        commands
+    })
+
+    const ecouter = async () => {
+        await SpeechRecognition.startListening({ language: "fr-FR" });
+    }
+    const stopListen = () => {
+        setListen(false)
+        SpeechRecognition.stopListening()
+    }
+    useEffect(() => {
         sendRequest(finalTranscript);
-    },[finalTranscript])
+    }, [finalTranscript])
     return (
         <>
             <AnimatePresence>
-                {dialogs.slice(id<4?0:id-3).map((value) => (
+                {dialogs.slice(id < 4 ? 0 : id - 3).map((value) => (
                     <motion.p
                         className={css({
                             margin: "10px 0",
@@ -104,27 +133,24 @@ export const Dialog = () => {
                     </div>
                     <div className="row no-gutters">
                         <button className={"col-sm-4 mb-4 mt-2 btn btn-success btn-block"}
-                                onClick={onClick}
-                                style={{borderTopRightRadius:"0",borderBottomRightRadius:"0"}}
+                            onClick={onClick}
+                            style={{ borderTopRightRadius: "0", borderBottomRightRadius: "0" }}
                         >Envoyer</button>
                         <button
                             className={"col-sm-4 mb-4 mt-2 btn btn-outline-info btn-block"}
-                            style={{borderRadius:"0"}}
-                            onClick={async () => {
-                                await SpeechRecognition.startListening({ language: "fr-FR" });
-                              console.log("Micros on")
-                            }}
+                            style={{ borderRadius: "0" }}
+                            onClick={ecouter}
                         >
                             Ecouter
                         </button>
                         <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
-                                onClick={() => SpeechRecognition.stopListening()}
-                                style={{borderTopLeftRadius:"0",borderBottomLeftRadius:"0"}}
+                            onClick={stopListen}
+                            style={{ borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }}
                         >
                             Arreter
                         </button>
                     </div>
-                 
+
                 </div>
             </div>
             <DialogMeteo />
