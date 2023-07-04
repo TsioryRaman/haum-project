@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
+
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
@@ -6,6 +7,9 @@ import DialogMeteo from "./DialogMeteo";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
+
+import { useSpeechSynthesis } from "react-speech-kit"
+import BlaguesAPI from 'blagues-api';
 
 const Msg = ({ children, user = true }) => {
     return (
@@ -27,7 +31,10 @@ const Msg = ({ children, user = true }) => {
 };
 
 export const Dialog = () => {
+
+    const { speak } = useSpeechSynthesis();
     const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
+    const [listen, setListen] = useState(false)
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
@@ -58,24 +65,43 @@ export const Dialog = () => {
             },
         },
         {
-            command: "Je voudrais savoir la météo * *",
-            callback: (pronom, city, { command, finalTranscript }) => {
+            command: "* météo * *",
+            callback: (mot, pronom, city, { command, finalTranscript }) => {
                 getMeteo(city);
                 console.log('command', command)
             },
         },
+
+        {
+            command: "raconte-moi * blague",
+            callback: async () => {
+                const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiSXNyVU5MOHR3WnhhNjBkTmJRUmxwU2UxZVlSbHNNcWdsdEpVV21tNzRVcWRJME50MHgiLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0wM1QxMjoyNDo0NiswMDowMCIsImlhdCI6MTY4ODM4NzA4Nn0.XDkCGavETYKlXCo3UaJbclqFAVh0VOdD2qmSY9tXzfw");
+
+                const d = await blague.random({
+                    disallow: [
+                        blague.categories.DARK,
+                        blague.categories.LIMIT
+                    ]
+                })
+                speak({ text: d.joke })
+
+                speak({ text: d.answer })
+            }
+        }
     ];
-
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) { console.log("browser is not supporting") }
-
-
     const { transcript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
         commands
     })
+    const ecouter = async () => {
+        await SpeechRecognition.startListening({ language: "fr-FR" });
+    }
+    const stopListen = () => {
+        setListen(false)
+        SpeechRecognition.stopListening()
+    }
     useEffect(() => {
-        const msg = finalTranscript;
-        console.log('finalTranscript' + finalTranscript)
         sendRequest(finalTranscript);
     }, [finalTranscript])
     return (
@@ -121,15 +147,13 @@ export const Dialog = () => {
                         <button
                             className={"col-sm-4 mb-4 mt-2 btn btn-outline-info btn-block"}
                             style={{ borderRadius: "0" }}
-                            onClick={async () => {
-                                await SpeechRecognition.startListening({ language: "fr-FR" });
-                                console.log("Micros on")
-                            }}
+                            onClick={ecouter}
                         >
                             Ecouter
                         </button>
                         <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
-                            onClick={() => SpeechRecognition.stopListening()}
+
+                            onClick={stopListen}
                             style={{ borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }}
                         >
                             Arreter

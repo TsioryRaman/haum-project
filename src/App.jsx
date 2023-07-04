@@ -102,10 +102,8 @@ function App() {
 
             </div>
 
-            <Projectinfo info={info} />
-
-
-        </div >
+            <Projectinfo showInfo={showInfo} info={info} />
+        </div>
     );
 }
 
