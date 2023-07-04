@@ -63,7 +63,7 @@ export const Dialog = () => {
         {
             command: "raconte-moi * blague",
             callback: async () => {
-                const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiM21JTGN6MHFqVTBHbDIwYXc5ZHZCWEtuV3FYUVpMVDNMVlN1Sm5HYXN1R3FhT1NFQnAiLCJjcmVhdGVkX2F0IjoiMjAyMi0wOS0xOVQxNTo1NjoxNiswMDowMCIsImlhdCI6MTY2MzYwMjk3Nn0.JSklGHX-0VhvOOVogkqyMte_XtOGHuQCvYUc7l7w-po");
+                const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiSXNyVU5MOHR3WnhhNjBkTmJRUmxwU2UxZVlSbHNNcWdsdEpVV21tNzRVcWRJME50MHgiLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0wM1QxMjoyNDo0NiswMDowMCIsImlhdCI6MTY4ODM4NzA4Nn0.XDkCGavETYKlXCo3UaJbclqFAVh0VOdD2qmSY9tXzfw");
 
                 const d = await blague.random({
                     disallow: [
@@ -77,15 +77,11 @@ export const Dialog = () => {
             }
         }
     ];
-
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) { console.log("browser is not supporting") }
-
-
     const { transcript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
         commands
     })
-
     const ecouter = async () => {
         await SpeechRecognition.startListening({ language: "fr-FR" });
     }

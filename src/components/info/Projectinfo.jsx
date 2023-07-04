@@ -16,6 +16,10 @@ const Projectinfo = ({ info, showInfo }) => {
         numeros: 7
     },
     {
+        name: "Rafanomezana Tendry Mahery",
+        numeros: 14
+    },
+    {
         name: "Rafaralahizakason Toky",
         numeros: 15
     },
