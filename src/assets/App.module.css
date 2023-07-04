@@ -1,18 +1,32 @@
-.digit svg{
-    height: 80px;    
+.digit svg {
+  height: 80px;
 }
 
-.rotate svg{
-    animation: rotation 5s infinite linear;
-  }
-  
+.rotate svg {
+  animation: rotation 5s infinite linear;
+}
+
+.rotationInverse svg {
+  animation: rotationInverse 5s infinite linear;
+}
+
 
 @keyframes rotation {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(359deg);
-    }
+  from {
+    transform: rotate(0deg);
   }
-  
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes rotationInverse {
+  from {
+    transform: rotate(359deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}

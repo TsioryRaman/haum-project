@@ -1,9 +1,12 @@
 import React, { useState, useLayoutEffect } from "react";
+import { css } from "@emotion/css";
 import { motion } from "framer-motion";
 import { Dialog } from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
 import style from "./assets/App.module.css";
-import { Settings, ChevronDown, ChevronUp } from 'react-feather';
+import { Settings, ChevronRight, ChevronLeft } from 'react-feather';
+import Lottie from 'react-lottie';
+import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
 
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
@@ -38,6 +41,14 @@ function App() {
     }, [datehour])
 
     const showInfo = () => { setInfo(i => !i) }
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    };
 
     return (
         <div
@@ -48,14 +59,11 @@ function App() {
                 style={{ minHeight: "100vh", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
             >
                 <div>
-                    <motion.h3
-                        style={{ fontSize: "8em" }}
-                        className={"text-white text-center"}
-
-                        initial={{ opacity: 0, y: -80 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                    >R<span className={`${style.rotate}`}><Settings size="0.8em" /></span>C<Settings size="0.8em" /></motion.h3>
+                    <Lottie
+                        options={defaultOptions}
+                        height={200}
+                        width={200}
+                    />
                     <div className="row gx-5">
 
                         <div
@@ -63,13 +71,14 @@ function App() {
                             style={{ marginTop: "80px" }}
                         >
                             <motion.h1
-                                style={{ fontSize: "4.5em" }}
+                                style={{ fontSize: "3em" }}
+                                className={"text-right"}
                                 initial={{ opacity: 0, y: -80 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.4 }}
+                                transition={{ duration: 0.5 }}
 
                             >
-                                Je suis <span className={"text-info"}>R<Settings size="0.8em" />C<Settings size="0.8em" /></span> votre assistant
+                                Je suis R<span className={`${style.rotate}`}><Settings size="0.8em" style={{ marginBottom: "15px" }} /></span>CC<span className={`${style.rotationInverse}`}><Settings size="0.8em" style={{ marginBottom: "15px" }} /></span> <br />votre assistant
                             </motion.h1>
                             <p className={"text-right mt-4"} style={{ fontSize: "3em" }}>
                                 {datehour.jour} / {datehour.mois} / {datehour.année}
@@ -78,7 +87,7 @@ function App() {
                                 <SevenSegmentDisplay color={"red"} digitCount={2} value={datehour.heure} />:<SevenSegmentDisplay color={"red"} value={datehour.minutes} digitCount={2} />:<SevenSegmentDisplay color={"red"} value={datehour.seconds} digitCount={2} />
                             </p>
                             <button className="btn btn-outline-light" onClick={() => showInfo()}>
-                                {!info ? "En savoir plus sur nous" : "Fermer"} {!info ? <ChevronDown /> : <ChevronUp />}
+                                {!info ? "En savoir plus sur nous" : "Fermer"} {!info ? <ChevronRight /> : <ChevronLeft />}
                             </button>
 
                         </div>

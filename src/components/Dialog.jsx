@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
@@ -37,9 +38,19 @@ export const Dialog = () => {
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
-        replyUser("hello")
+        if (!inp.current.value) {
+            replyUser("Dites quelque chose !")
+        } else {
+            setTimeout(function () {
+                console.log(inp);
+                replyUser('vous avez ecris ' + inp.current.value)
+            }, 1000
+            )
+        }
+
         inp.current.value = null;
     };
+
     const commands = [
         {
             command: "*",
@@ -60,6 +71,7 @@ export const Dialog = () => {
                 console.log('command', command)
             },
         },
+
         {
             command: "raconte-moi * blague",
             callback: async () => {
@@ -140,6 +152,7 @@ export const Dialog = () => {
                             Ecouter
                         </button>
                         <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
+
                             onClick={stopListen}
                             style={{ borderTopLeftRadius: "0", borderBottomLeftRadius: "0" }}
                         >
