@@ -10,6 +10,8 @@ import SpeechRecognition, {
 import { useSpeechSynthesis } from "react-speech-kit"
 import BlaguesAPI from 'blagues-api';
 
+import { getPorts } from "../arduino/arduino";
+
 const Msg = ({ children, user = true }) => {
     return (
         <motion.p
@@ -34,6 +36,8 @@ export const Dialog = () => {
     const { speak } = useSpeechSynthesis();
     const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
     const [listen, setListen] = useState(false)
+    
+    const [port,setPort] = useState();
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
@@ -75,6 +79,47 @@ export const Dialog = () => {
 
                 speak({ text: d.answer })
             }
+        },
+        {
+            command: "Avancer",
+            callback: async () => {
+                const writer = await port.writable.getWriter();
+
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('1'));
+                speak({ text: "J'avance maitre" })
+                
+                writer.releaseLock();
+            }
+        },
+        
+        {
+            command: "* l'obstacle",
+            callback: async () => {
+                const writer = await port.writable.getWriter();
+
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('2'));
+                speak({ text: "Je contourne l'obstacle" })
+                
+                writer.releaseLock();
+
+
+            }
+        },
+        {
+            command: "Stop *",
+            callback: async () => {
+                const writer = await port.writable.getWriter();
+
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('100'));
+                speak({ text: "D'accord maitre, je m'arrete" })
+                
+                
+                writer.releaseLock();
+
+            }
         }
     ];
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) { console.log("browser is not supporting") }
@@ -83,6 +128,10 @@ export const Dialog = () => {
         commands
     })
     const ecouter = async () => {
+        if(!port){
+            let p = await getPorts();
+            setPort(p);
+        }
         await SpeechRecognition.startListening({ language: "fr-FR" });
     }
     const stopListen = () => {

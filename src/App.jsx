@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Dialog } from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
@@ -7,13 +7,16 @@ import { Settings, ChevronDown, ChevronUp } from 'react-feather';
 
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
+import { getPorts } from "./arduino/arduino";
 
 const setTime = number => number < 10 ? "0" + number : number
 
 
 function App() {
     let newDate = new Date();
+    const cmd = useRef();
     const [info, setInfo] = useState(false)
+    const [port,setPort] = useState();
     const [datehour, setDateHour] = useState({
         jour: newDate.getDate(),
         mois: newDate.getMonth() + 1,
@@ -22,6 +25,25 @@ function App() {
         minutes: newDate.getMinutes(),
         seconds: newDate.getSeconds(),
     });
+
+    const openPort = async (e) => {
+
+        let p = await getPorts();
+        console.log(p);
+        setPort(p);
+    }
+
+    const send = async (e) => {
+        e.preventDefault();
+        const writer = await port.writable.getWriter();
+
+        let enc = new TextEncoder();
+        await writer.write(enc.encode('1'));
+
+
+        // Allow the serial port to be closed later.
+        writer.releaseLock();
+    }
 
     useLayoutEffect(() => {
         setTimeout(() => {
@@ -88,6 +110,12 @@ function App() {
                         >
                             <Dialog />
                         </div>
+                        <input
+                            type="text"
+                            ref={cmd}
+                        />
+                        <button onClick={send}>Envoyer</button>
+                        <button onClick={openPort}>Open port</button>
                     </div>
                 </div>
 
