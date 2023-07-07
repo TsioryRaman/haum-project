@@ -10,11 +10,14 @@ import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
 
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
+import { Music } from "./components/music";
 
 const setTime = number => number < 10 ? "0" + number : number
 
 
 function App() {
+    const [showModal, setShowModal] = useState(false)
+    const [artiste, setArtiste] = useState("")
     let newDate = new Date();
     const [info, setInfo] = useState(false)
     const [datehour, setDateHour] = useState({
@@ -39,7 +42,11 @@ function App() {
             })
         }, 1000)
     }, [datehour])
+    // const changement = (a, b) => {
+    //     setShowModal(a)
+    //     setArtiste(b)
 
+    // }
     const showInfo = () => { setInfo(i => !i) }
     const defaultOptions = {
         loop: true,
@@ -56,9 +63,11 @@ function App() {
         >
             <div
                 className={"container"}
-                style={{ minHeight: "100vh", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+                style={{ minHeight: "100vh", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
             >
                 <div>
+                    {/* <button onClick={() => setShowModal(true)}>show modal</button> */}
+                    {showModal && <Music artisteProps={artiste} onClearArtiste={setArtiste} modal={setShowModal} />}
                     <Lottie
                         options={defaultOptions}
                         height={200}
@@ -95,7 +104,7 @@ function App() {
                             className={"text-white col-sm-12 col-md-6"}
                             style={{ marginTop: "80px" }}
                         >
-                            <Dialog />
+                            <Dialog onShow={setShowModal} onArtiste={setArtiste} />
                         </div>
                     </div>
                 </div>

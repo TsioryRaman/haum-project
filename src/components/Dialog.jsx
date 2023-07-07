@@ -10,6 +10,7 @@ import SpeechRecognition, {
 
 import { useSpeechSynthesis } from "react-speech-kit"
 import BlaguesAPI from 'blagues-api';
+import { Howl } from "howler";
 
 const Msg = ({ children, user = true }) => {
     return (
@@ -30,7 +31,7 @@ const Msg = ({ children, user = true }) => {
     );
 };
 
-export const Dialog = () => {
+export const Dialog = ({ onShow, onArtiste }) => {
 
     const { speak } = useSpeechSynthesis();
     const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
@@ -42,22 +43,15 @@ export const Dialog = () => {
             replyUser("Dites quelque chose !")
         } else {
             setTimeout(function () {
-                console.log(inp);
                 replyUser('vous avez ecris ' + inp.current.value)
+                inp.current.value = null
             }, 1000
             )
         }
 
-        inp.current.value = null;
     };
 
     const commands = [
-        {
-            command: "*",
-            callback: (standard) => {
-                console.log('standard' + standard);
-            }
-        },
         {
             command: "Salut",
             callback: ({ command }) => {
@@ -86,6 +80,86 @@ export const Dialog = () => {
                 speak({ text: d.joke })
 
                 speak({ text: d.answer })
+
+
+            }
+
+        },
+        {
+            command: "album de *",
+            callback: (standard) => {
+                const indexDe = standard.indexOf('de')
+                const artiste = standard.slice(indexDe + 1)
+
+                onArtiste(artiste)
+
+                onShow(x => !x)
+
+
+            }
+        },
+        {
+            command: "comment vas-tu",
+            callback: () => {
+                const reponse = ["Je vais bien ...", "Pas mal", "Un bon chocolat chaud me fera du bien ", "il fait froid mais bon ...", "Je suis en pleine forme", "ca va comme tous les jours", "il fait tres tres froid aujourd'hui"]
+                const rand = Math.floor(Math.random() * reponse.length)
+                replyUser(reponse[rand])
+            }
+        },
+        {
+            command: "au revoir",
+            callback: () => {
+                const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
+                const rand = Math.floor(Math.random() * reponse.length)
+                replyUser(reponse[rand])
+            }
+        },
+        {
+            command: "Bonjour",
+            callback: () => {
+                const reponse = ["Salutation ", "Bonjour , content de vous revoir", "Bonjour Je suis votre Robot assistante "]
+                const rand = Math.floor(Math.random() * reponse.length)
+                replyUser(reponse[rand])
+            }
+        },
+        {
+            command: "* la musique",
+            callback: async () => {
+                const url = 'https://spotify23.p.rapidapi.com/tracks/?ids=4WNcduiCmDNfmTEz7JvmLv';
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': 'cdd5c921b2mshd17a687b801af2dp1b17c1jsn8dc4709b9df0',
+                        'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
+                    }
+                };
+
+                try {
+                    const response = await fetch(url, options);
+                    const result = await response.json();
+                    const titre = "titre de la musique :" + result.tracks[0].name
+
+                    replyUser(titre)
+                    const src = result.tracks[0].preview_url
+                    // const src = "../assets/music.mp3"
+                    console.log(result.tracks[0].preview_url)
+                    const sound = new Howl({
+                        src,
+                        html5: true
+                    })
+                    setTimeout(() => {
+                        sound.play()
+
+                    }, 5000)
+                    setTimeout(() => {
+                        sound.pause()
+
+                    }, 10000)
+
+                    console.log("voici la musique :", result);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
     ];
