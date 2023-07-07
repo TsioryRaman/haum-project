@@ -116,6 +116,9 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
                 const rand = Math.floor(Math.random() * reponse.length)
                 replyUser(reponse[rand])
+                
+                setListen(false)
+                SpeechRecognition.stopListening()
             }
         },
         {
@@ -213,12 +216,12 @@ export const Dialog = ({ onShow, onArtiste }) => {
         language: "fr-FR",
         commands
     })
-    const ecouter = async () => {
-        if(!port){
+    const ecouter = () => {
+        /*if(!port){
             let p = await getPorts();
             setPort(p);
-        }
-        await SpeechRecognition.startListening({ language: "fr-FR" });
+        }*/
+        SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
     }
     const stopListen = () => {
         setListen(false)

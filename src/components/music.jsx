@@ -14,12 +14,11 @@ const CLIENT_ID = "609de20d191a43c8b8d69fff10bc78d9"
 const CLIENT_SECRET = "cbdb243eabad4f06b0803671c9d00aa7"
 export function Music({ artisteProps, onClearArtiste, modal }) {
     const [open, setOpen] = useState(false);
-    // const [artist, setArtist] = useState(artisteProps)
     const [lgShow, setLgShow] = useState(true);
     const [accessToken, setAccessToken] = useState("")
-    const [albums, setAlbums] = useState([])
-    useEffect(async () => {
-        // (async function () {
+    const [albums, setAlbums] = useState(null)
+    useEffect(() => {
+        (async function () {
 
         const url = "https://accounts.spotify.com/api/token"
         const authParameters = {
@@ -32,42 +31,34 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
         const result = await fetch(url, authParameters)
         const data = await result.json()
         setAccessToken(data.access_token)
-
+        await musicShow(data.access_token)
         // localStorage.setItem("token", accessToken);
-
 
         console.log("artiste dans le component", artisteProps)
 
-        // })()
+        })()
 
 
     }, [artisteProps])
 
-    async function musicShow() {
-        console.log("token: ", accessToken)
+    async function musicShow(token) {
         if (artisteProps) {
             var artistParameters = {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
+                    'Authorization': 'Bearer ' + token
                 }
             }
-            console.log(artisteProps)
             var response = await fetch('https://api.spotify.com/v1/search?q=' + artisteProps + '&type=artist', artistParameters)
             var result = await response.json()
             var artistId = result.artists.items[0].id
-            console.log("artiste ID ", result.artists.items[0].id)
-            // console.log(response)
-            var Responsedata = await fetch('https://api.spotify.com/v1/artists/' + artistId + '/albums' + '?include_groups=album&market=US&limit=5', artistParameters)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data.items)
-                    setAlbums(data.items)
-                })
+
+            let Responsedata = await fetch('https://api.spotify.com/v1/artists/' + artistId + '/albums' + '?include_groups=album&market=US&limit=5', artistParameters)
+            let data = await Responsedata.json()
+            setAlbums(data.items)
             // var data = await Responsedata.json()
             // 
-            console.log("data dans component :", albums)
             setOpen(x => !x)
             onClearArtiste('')
 
@@ -104,14 +95,14 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ 'backgroundColor': '#051512f0' }}>
-                    <Button variant="success" onClick={
+                    {/* <Button variant="success" onClick={
                         musicShow
                     }
                         aria-controls="example-collapse-text"
                     >
-                        SHOW ALBUM</Button>
-
-                    {albums.map((album, i) => {
+                        SHOW ALBUM</Button> */}
+                    {!albums && <span>Chargement...</span>}
+                    {albums && albums.map((album, i) => {
                         return (
                             //{Array.from({ length: 1 }).map((album, i) => (
                             // <Row className="g-4">
@@ -130,7 +121,7 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
                             //</Col>
                             //</Row>
                             //))}
-                            <Collapse in={open}>
+                            <Collapse key={i} in={open}>
                                 <div id="example-collapse-text">
 
                                     <Row style={{
