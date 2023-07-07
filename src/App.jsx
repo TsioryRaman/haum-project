@@ -128,12 +128,6 @@ function App() {
                         >
                             <Dialog onShow={setShowModal} onArtiste={setArtiste} />
                         </div>
-                        <input
-                            type="text"
-                            ref={cmd}
-                        />
-                        <button onClick={send}>Envoyer</button>
-                        <button onClick={openPort}>Open port</button>
                     </div>
                 </div>
 
