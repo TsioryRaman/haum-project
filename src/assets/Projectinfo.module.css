@@ -1,6 +1,7 @@
 .container {
     position: absolute;
     min-height: 100vh;
+    height: 100%;
     width: 100%;
     top: 0;
     right: 0;
@@ -14,7 +15,7 @@
 
 .close {
     animation: close_animation .8s;
-    margin-top: -100vh;
+    transform: translateY(-110%);
 }
 
 .projectTitle {

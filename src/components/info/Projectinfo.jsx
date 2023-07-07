@@ -28,7 +28,7 @@ const Projectinfo = ({ info, showInfo }) => {
         numeros: 16
     }, {
         name: "Andrianarivo Sitrakiniaina Herinomena",
-        numeros: 17
+        numeros: 14
     }]
     const description = "Roco (ou RObot COmpagnon) est un robot de compagnie aux enfants hospitalisés qui les aides à se divertir en faisant oublier leur quotidien grâce à divers jeu sonorisé amusant pour les enfants. ROCO peut venir en aides aux parents pour les taches comme le rappel des notes important dans leur agenda liée à son smartphones qui est connecté.  Pour son fonctionnement, il suffit de l’appeler par son nom pour qu’il puisse nous offrir son aidé. Il a la capacité de se déplacer sans problème même s’il y a des obstacles sur son chemin car il est muni d’un capteur. Il possède un micro permettant à l’utilisateur de donner des ordres et pour se communiquer. Grace à son Intelligence Artificielle intégré, il peut accomplir leur mission tout seul."
 
@@ -68,7 +68,9 @@ const Projectinfo = ({ info, showInfo }) => {
                     marginRight: "3em"
                 })}`}>
                 {description}
+
             </motion.p>
+
             <button className="btn btn-outline-light" onClick={() => showInfo()}>
                 Fermer <ChevronUp />
             </button>
