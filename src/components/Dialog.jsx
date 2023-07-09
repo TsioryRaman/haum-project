@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,6 +12,7 @@ import BlaguesAPI from 'blagues-api';
 import { Howl } from "howler";
 
 import { getPorts } from "../arduino/arduino";
+import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 
 const Msg = ({ children, user = true }) => {
     return (
@@ -38,8 +38,10 @@ export const Dialog = ({ onShow, onArtiste }) => {
     const { speak } = useSpeechSynthesis();
     const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
     const [listen, setListen] = useState(false)
-    
-    const [port,setPort] = useState();
+    const [loadBluetooth, setLoadBluetooth] = useState(false);
+    const [loadBluetoothError,setLoadBluetoothError] = useState(false)
+
+    const [port,setPort] = useState(null);
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
@@ -71,7 +73,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
         },
 
         {
-            command: "raconte-moi * blague",
+            command: ["raconte-moi * blague","une blague (s'il te plait)"],
             callback: async () => {
                 const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiSXNyVU5MOHR3WnhhNjBkTmJRUmxwU2UxZVlSbHNNcWdsdEpVV21tNzRVcWRJME50MHgiLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0wM1QxMjoyNDo0NiswMDowMCIsImlhdCI6MTY4ODM4NzA4Nn0.XDkCGavETYKlXCo3UaJbclqFAVh0VOdD2qmSY9tXzfw");
 
@@ -90,7 +92,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
 
         },
         {
-            command: "album de *",
+            command: "(l')album de * (s'il te plait)",
             callback: (standard) => {
                 const indexDe = standard.indexOf('de')
                 const artiste = standard.slice(indexDe + 1)
@@ -111,18 +113,25 @@ export const Dialog = ({ onShow, onArtiste }) => {
             }
         },
         {
-            command: "au revoir",
-            callback: () => {
+            command: ["au revoir (Rocco)", "A bientot (Rocco)"],
+            callback: async () => {
+                await SpeechRecognition.stopListening()
                 const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
+                const writer = await port.writable.getWriter();
+
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('100'));
+                writer.releaseLock();
+
                 const rand = Math.floor(Math.random() * reponse.length)
                 replyUser(reponse[rand])
-                
                 setListen(false)
-                SpeechRecognition.stopListening()
+                
+                await port.close()
             }
         },
         {
-            command: "Bonjour",
+            command: ["Bonjour (Rocco)","Salut (Rocco)","Hello (Rocco)","Rocco (Rocco)"],
             callback: () => {
                 const reponse = ["Salutation ", "Bonjour , content de vous revoir", "Bonjour Je suis votre Robot assistante "]
                 const rand = Math.floor(Math.random() * reponse.length)
@@ -170,58 +179,80 @@ export const Dialog = ({ onShow, onArtiste }) => {
             }
         },
         {
-            command: "Avancer",
+            command: ["Avancer","en français"],
             callback: async () => {
                 const writer = await port.writable.getWriter();
 
                 let enc = new TextEncoder();
                 await writer.write(enc.encode('1'));
                 speak({ text: "J'avance maitre" })
-                
                 writer.releaseLock();
             }
         },
-        
         {
-            command: "* l'obstacle",
+            command: ["* l'obstacle","contourne (l'obstacle)","Esquive (Rocco)"],
             callback: async () => {
                 const writer = await port.writable.getWriter();
 
                 let enc = new TextEncoder();
                 await writer.write(enc.encode('2'));
                 speak({ text: "Je contourne l'obstacle" })
-                
                 writer.releaseLock();
 
 
             }
         },
         {
-            command: "Stop *",
+            command: ["Stop *","Stop (Rocco)","stoppe","top"],
             callback: async () => {
                 const writer = await port.writable.getWriter();
 
                 let enc = new TextEncoder();
                 await writer.write(enc.encode('100'));
                 speak({ text: "D'accord maitre, je m'arrete" })
-                
-                
+                writer.releaseLock();
+
+
+            }
+        },
+        {
+            command: ["recule *","recule (Rocco)","reculer"],
+            callback: async () => {
+                const writer = await port.writable.getWriter();
+
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('4'));
+                speak({ text: "D'accord maitre, je recule" })
                 writer.releaseLock();
 
             }
         }
     ];
     if (!SpeechRecognition.browserSupportsSpeechRecognition()) { console.log("browser is not supporting") }
-    const { transcript, listening, finalTranscript } = useSpeechRecognition({
+    const { resetTranscript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
         commands
     })
-    const ecouter = () => {
-        /*if(!port){
-            let p = await getPorts();
-            setPort(p);
-        }*/
-        SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+    const ecouter =async () => {
+        setListen(false)
+        SpeechRecognition.stopListening()
+        setLoadBluetoothError(false)
+        if(!port){
+            let p = await getPorts(setLoadBluetooth);
+            if(p){
+                console.log("Bluetooth OK")
+                setPort(p)
+                setLoadBluetooth(false)
+                SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+            }else{
+                console.log("Bluetooth non OK")
+                setLoadBluetoothError(true)
+                setTimeout(function(){
+                    setLoadBluetooth(false)
+                    SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+                },2000)
+            }
+        }
     }
     const stopListen = () => {
         setListen(false)
@@ -229,6 +260,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
     }
     useEffect(() => {
         sendRequest(finalTranscript);
+        resetTranscript()
     }, [finalTranscript])
     return (
         <>
@@ -250,9 +282,8 @@ export const Dialog = ({ onShow, onArtiste }) => {
                         {value.msg}
                     </motion.p>
                 ))}
-                {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
                 {listening && <Msg key={"im-listening"} user={false}>Je vous écoute</Msg>}
-                {listening && <Msg key={"transcripting"}>{transcript}</Msg>}
+                {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
             </AnimatePresence>
             <div>
                 <div className="row">
@@ -285,7 +316,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                             Arreter
                         </button>
                     </div>
-
+                    <LoadingBluetoothConnection show={loadBluetooth} error={loadBluetoothError} setLoadBluetooth={setLoadBluetooth}/>
                 </div>
             </div>
             <DialogMeteo />

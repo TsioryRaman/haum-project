@@ -1,7 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react"
-import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Card from 'react-bootstrap/Card';
+import { useEffect, useState } from "react"
 import Col from 'react-bootstrap/Col';
 import Collapse from 'react-bootstrap/Collapse';
 import Row from 'react-bootstrap/Row';
@@ -9,7 +6,6 @@ import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 
 import Modal from 'react-bootstrap/Modal';
-import { CardGroup } from "react-bootstrap";
 const CLIENT_ID = "609de20d191a43c8b8d69fff10bc78d9"
 const CLIENT_SECRET = "cbdb243eabad4f06b0803671c9d00aa7"
 export function Music({ artisteProps, onClearArtiste, modal }) {
@@ -129,7 +125,6 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
                                     }}>
                                         <Col xs={6} md={4}>
                                             < Image src={album.images[0].url} roundedCircle style={{ 'width': '163px ' }} />
-
                                         </Col>
                                         <Col xs={12} md={8} style={{ 'color': 'white' }}>
                                             <h4 style={{ 'color': '#367dc7cf' }}>{album.name}</h4>
@@ -140,12 +135,8 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
                                 </div>
                             </Collapse>
                         )
-                    }
-                    )
-                    }
-
+                    })}
                 </Modal.Body>
-
             </Modal >
         </div >
     </>
