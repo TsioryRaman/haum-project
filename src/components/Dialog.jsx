@@ -12,7 +12,7 @@ import { Howl } from "howler";
 import { getPorts, sendRoccoData } from "../arduino/arduino";
 import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
-import { Mic,MicOff,Send } from "react-feather";
+import { Mic,MicOff,Send,Radio } from "react-feather";
 // Mot dite par l'utilisateur et repondu par la machine
 const Msg = ({ children, user = true }) => {
     return (
@@ -36,7 +36,7 @@ const Msg = ({ children, user = true }) => {
 export const Dialog = ({ onShow, onArtiste }) => {
 
     const { speak } = useSpeechSynthesis();
-    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme } = useContext(DialogContext);
+    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme,clearMessage } = useContext(DialogContext);
     const [listen, setListen] = useState(false)
     const [loadBluetooth, setLoadBluetooth] = useState(false);
     const [loadBluetoothError,setLoadBluetoothError] = useState(false)
@@ -139,6 +139,9 @@ export const Dialog = ({ onShow, onArtiste }) => {
                     replyUser(reponse[rand])
                     setListen(false)
                     setPort(null)
+                    setTimeout(function(){
+                    clearMessage()
+                    },2000)
                 }catch(e){
 
                 }
@@ -187,25 +190,25 @@ export const Dialog = ({ onShow, onArtiste }) => {
         {
             command: ["Avancer","en français","Avance"],
             callback: () => {
-                sendRoccoData(port,'1',"D'accord maitre, J'avance",speak)
+                sendRoccoData(port,'1',"D'accord maitre, J'avance",replyUser)
             }
         },
         {
             command: ["* l'obstacle","contourne (l'obstacle)","Esquive (Rocco)"],
             callback: () => {
-                sendRoccoData(port,'2',"D'accord maitre, Je contourne l'obstacle",speak)
+                sendRoccoData(port,'2',"D'accord maitre, Je contourne l'obstacle",replyUser)
             }
         },
         {
             command: ["Stop *","Stop (Rocco)","stoppe","top"],
             callback: () => {
-                sendRoccoData(port,'100',"D'accord maitre, je m'arrete",speak)
+                sendRoccoData(port,'100',"D'accord maitre, je m'arrete",replyUser)
             }
         },
         {
             command: ["recule *","recule (Rocco)","reculer"],
             callback: () => {
-                sendRoccoData(port,'4',"D'accord maitre, je recule",speak)
+                sendRoccoData(port,'4',"D'accord maitre, je recule",replyUser)
             }
         },
         {
@@ -266,6 +269,9 @@ export const Dialog = ({ onShow, onArtiste }) => {
         exitRoccoConnection()
         replyUser("Rocco déconnécté")
         SpeechRecognition.stopListening()
+        setTimeout(function(){
+            clearMessage()
+            },2000)
     }
     useEffect(() => {
         sendRequest(finalTranscript);
@@ -277,8 +283,19 @@ export const Dialog = ({ onShow, onArtiste }) => {
     }, [finalTranscript])
     return (
         <>
-            <AnimatePresence>
+        
+        <motion.div
+            id="message"
+            className={css({
+                minHeight: "15rem",
+                maxHeight: "15rem",
+                overflowY:"scroll",
+                scrollbarWidth:"none",
+                
+            })}>
+                
                 {dialogs.slice(id < 4 ? 0 : id - 3).map((value) => (
+
                     <motion.p
                         className={css({
                             margin: "10px 0",
@@ -286,18 +303,18 @@ export const Dialog = ({ onShow, onArtiste }) => {
                             paddingBottom: 10,
                             textAlign: value.user ? "right" : "left",
                         })}
-                        initial={{ opacity: 0, y: "80px" }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: "-80px" }}
-                        transition={{ duration: 0.5 }}
                         key={value.id}
                     >
                         {value.msg}
                     </motion.p>
                 ))}
-                {listening && <Msg key={"im-listening"} user={false}>Je vous écoute</Msg>}
                 {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
-            </AnimatePresence>
+            
+            </motion.div>
+            {listening && <div className="d-flex justify-content-center flex-row mb-4">
+                <Mic size="2rem"/>
+                <Radio size="2rem" />
+                </div>}
             <div>
                 <div className="row">
                     <div className="col-sm-12 mb-2">

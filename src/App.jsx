@@ -11,7 +11,7 @@ import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
 import SevenSegmentDisplay from 'seven-segment-display';
 import { Music } from "./components/music";
 import { DARK, DialogContext, LIGHT } from "./DialogContext";
-import { ButtonTheme } from "./components/ButtonTheme";
+import { ButtonTheme } from "./components/ui/ButtonTheme";
 const setTime = number => number < 10 ? "0" + number : number
 
 

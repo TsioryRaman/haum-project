@@ -1,7 +1,7 @@
 import {motion} from "framer-motion";
 import {css} from "@emotion/css";
 import React from "react";
-import {fadeInUp, stagger} from "./animation";
+import {fadeInUp, stagger} from "../../utility/animation";
 
 export function ActionButton({children, onClick}) {
     return <motion.button
