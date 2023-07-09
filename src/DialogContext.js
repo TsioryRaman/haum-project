@@ -3,6 +3,9 @@ import { getMeteoForCity, getMeteoForCityFake } from "./services/meteo";
 import {useSpeechSynthesis} from "react-speech-kit"
 export const DialogContext = createContext();
 
+export const DARK = "dark";
+export const LIGHT = "light"
+
 const initialState = {
     dialogs: [
         { msg: "En quoi puis-je vous aider aujourd'hui?", id: 0, user: false },
@@ -14,6 +17,7 @@ export const DialogProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
     const {speak} = useSpeechSynthesis();
+    const [theme,setTheme] = useState(LIGHT)
     const getMeteo = async (city, msg = "") => {
         console.log("city ", city);
         setLoading(true);
@@ -39,6 +43,18 @@ export const DialogProvider = ({ children }) => {
             );
         }
     };
+    const switchTheme = (t) => {
+        setTheme(t)
+        const root = document.querySelector("#root");
+        if(t === LIGHT){
+            root.classList.remove("vicious_stance")
+            root.classList.add("sky_glider")
+        }
+        if(t === DARK){
+            root.classList.remove("premium_white")
+            root.classList.add("vicious_stance")
+        }
+    }
     const askForMeteo = () => {
         setMeteo(true);
     };
@@ -72,6 +88,8 @@ export const DialogProvider = ({ children }) => {
                 replyUser,
                 closeMeteo,
                 loading,
+                switchTheme,
+                theme
             }}
         >
             {children}
