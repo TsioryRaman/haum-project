@@ -1,5 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect, useRef } from "react";
-import { css } from "@emotion/css";
+import React, { useState, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { Dialog } from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
@@ -11,8 +10,6 @@ import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
 import { Music } from "./components/music";
-import { getPorts } from "./arduino/arduino";
-
 const setTime = number => number < 10 ? "0" + number : number
 
 
@@ -20,9 +17,7 @@ function App() {
     const [showModal, setShowModal] = useState(false)
     const [artiste, setArtiste] = useState("")
     let newDate = new Date();
-    const cmd = useRef();
     const [info, setInfo] = useState(false)
-    const [port,setPort] = useState();
     const [datehour, setDateHour] = useState({
         jour: newDate.getDate(),
         mois: newDate.getMonth() + 1,
@@ -31,25 +26,6 @@ function App() {
         minutes: newDate.getMinutes(),
         seconds: newDate.getSeconds(),
     });
-
-    const openPort = async (e) => {
-
-        let p = await getPorts();
-        console.log(p);
-        setPort(p);
-    }
-
-    const send = async (e) => {
-        e.preventDefault();
-        const writer = await port.writable.getWriter();
-
-        let enc = new TextEncoder();
-        await writer.write(enc.encode('1'));
-
-
-        // Allow the serial port to be closed later.
-        writer.releaseLock();
-    }
 
     useLayoutEffect(() => {
         setTimeout(() => {
@@ -88,7 +64,6 @@ function App() {
                 style={{ minHeight: "100vh", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
             >
                 <div>
-                    {/* <button onClick={() => setShowModal(true)}>show modal</button> */}
                     {showModal && <Music artisteProps={artiste} onClearArtiste={setArtiste} modal={setShowModal} />}
                     <Lottie
                         options={defaultOptions}
