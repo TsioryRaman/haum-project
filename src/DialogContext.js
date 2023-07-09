@@ -63,7 +63,17 @@ export const DialogProvider = ({ children }) => {
     };
     const pushMessage = (msg = "", user = true) => {
         setDialogs((prevState)=>[...prevState, { msg, id: prevState.length, user }]);
+        
+        let element
+        if(!element){
+            element = document.querySelector("#message")
+        }
+        console.log(element.scrollTop)
+        element.scrollTo({top:element.scrollHeight,behavior:"smooth"})
     };
+    const clearMessage = () => {
+        setDialogs(initialState.dialogs)
+    }
     const sendRequest = (msg = "") => {
         if (msg.length <= 0) return;
         pushMessage(msg);
@@ -89,7 +99,8 @@ export const DialogProvider = ({ children }) => {
                 closeMeteo,
                 loading,
                 switchTheme,
-                theme
+                theme,
+                clearMessage
             }}
         >
             {children}

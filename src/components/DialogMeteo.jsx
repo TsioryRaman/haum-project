@@ -3,7 +3,7 @@ import { DialogContext } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
 import "bootstrap/dist/css/bootstrap.min.css"
-import { ActionButton, ActionButtonList } from "./ActionButton.jsx";
+import { ActionButton, ActionButtonList } from "./ui/ActionButton.jsx";
 
 const DialogMeteo = ({ children }) => {
     const {
