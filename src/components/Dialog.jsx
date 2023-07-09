@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { DialogContext } from "../DialogContext";
+import { DARK, DialogContext, LIGHT } from "../DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
 import DialogMeteo from "./DialogMeteo";
@@ -36,7 +36,7 @@ const Msg = ({ children, user = true }) => {
 export const Dialog = ({ onShow, onArtiste }) => {
 
     const { speak } = useSpeechSynthesis();
-    const { dialogs, sendRequest, getMeteo, id, loading, replyUser } = useContext(DialogContext);
+    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme } = useContext(DialogContext);
     const [listen, setListen] = useState(false)
     const [loadBluetooth, setLoadBluetooth] = useState(false);
     const [loadBluetoothError,setLoadBluetoothError] = useState(false)
@@ -207,6 +207,13 @@ export const Dialog = ({ onShow, onArtiste }) => {
             callback: () => {
                 sendRoccoData(port,'4',"D'accord maitre, je recule",speak)
             }
+        },
+        {
+            command: ["Change * thème"],
+            callback: () => {
+                speak({text:`Changement de theme en ${theme === DARK ? "jour" : "nuit"}`})
+                theme === DARK ? switchTheme(LIGHT) : switchTheme(DARK)
+            }
         }
     ];
 
@@ -313,7 +320,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                             onClick={ecouter}
                             disabled={listen}
                         >
-                            Ecouter <Mic size="1rem"/>
+                            Ecouter <Mic color="cyan" size="1rem"/>
                         </button>
                         <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
 

@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Dialog } from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
@@ -10,6 +10,8 @@ import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
 import { Music } from "./components/music";
+import { DARK, DialogContext, LIGHT } from "./DialogContext";
+import { ButtonTheme } from "./components/ButtonTheme";
 const setTime = number => number < 10 ? "0" + number : number
 
 
@@ -26,6 +28,7 @@ function App() {
         minutes: newDate.getMinutes(),
         seconds: newDate.getSeconds(),
     });
+
 
     useLayoutEffect(() => {
         setTimeout(() => {
@@ -55,14 +58,17 @@ function App() {
         }
     };
 
+
     return (
         <div
             style={{ overflow: "hidden", position: "relative" }}
         >
             <div
                 className={"container"}
-                style={{ minHeight: "100vh", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+                style={{ minHeight: "100vh",position:"relative", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
             >
+                
+                <ButtonTheme />
                 <div>
                     {showModal && <Music artisteProps={artiste} onClearArtiste={setArtiste} modal={setShowModal} />}
                     <Lottie
@@ -73,7 +79,7 @@ function App() {
                     <div className="row gx-5">
 
                         <div
-                            className={"text-white col-sm-12 col-md-6 "}
+                            className={"col-sm-12 col-md-6 "}
                             style={{ marginTop: "80px" }}
                         >
                             <motion.h1
@@ -98,7 +104,7 @@ function App() {
 
                         </div>
                         <div
-                            className={"text-white col-sm-12 col-md-6"}
+                            className={"col-sm-12 col-md-6"}
                             style={{ marginTop: "80px" }}
                         >
                             <Dialog onShow={setShowModal} onArtiste={setArtiste} />
