@@ -12,7 +12,7 @@ import { Howl } from "howler";
 import { getPorts, sendRoccoData } from "../arduino/arduino";
 import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
-import { Mic,MicOff,Send,Radio } from "react-feather";
+import { Mic, MicOff, Send, Radio } from "react-feather";
 // Mot dite par l'utilisateur et repondu par la machine
 const Msg = ({ children, user = true }) => {
     return (
@@ -33,15 +33,18 @@ const Msg = ({ children, user = true }) => {
     );
 };
 
-export const Dialog = ({ onShow, onArtiste }) => {
+export const Dialog = ({ onShow, onArtiste, biographie, showModalBiographi }) => {
 
     const { speak } = useSpeechSynthesis();
-    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme,clearMessage } = useContext(DialogContext);
+    const [searchResultWiki, setSearchResultWiki] = useState([]);
+    const [searchInfo, setSearchInfo] = useState([]);
+    const { dialogs, sendRequest, getMeteo, id, loading, replyUser, switchTheme, theme, clearMessage } = useContext(DialogContext);
     const [listen, setListen] = useState(false)
     const [loadBluetooth, setLoadBluetooth] = useState(false);
-    const [loadBluetoothError,setLoadBluetoothError] = useState(false)
+    const [modalShow, setModalShow] = useState(false);
+    const [loadBluetoothError, setLoadBluetoothError] = useState(false)
 
-    const [port,setPort] = useState(null);
+    const [port, setPort] = useState(null);
     const inp = useRef(null);
     const onClick = (e) => {
         sendRequest(inp.current.value);
@@ -59,12 +62,12 @@ export const Dialog = ({ onShow, onArtiste }) => {
     const commands = [
         {
             command: "*",
-            callback: ({command}) => {
+            callback: ({ command }) => {
 
             }
         },
         {
-            command: ["Bonjour (Rocco)","Salut (Rocco)","Hello (Rocco)","Rocco (Rocco)","Hi (Rocco)"],
+            command: ["Bonjour (Rocco)", "Salut (Rocco)", "Hello (Rocco)", "Rocco (Rocco)", "Hi (Rocco)"],
             callback: () => {
                 const reponse = ["Salutation ", "Bonjour , content de vous revoir", "Bonjour, en quoi puis-je vous etre utile maitre?"]
                 replyUser(reponse[Math.floor(Math.random() * reponse.length)])
@@ -78,9 +81,9 @@ export const Dialog = ({ onShow, onArtiste }) => {
         },
 
         {
-            command: ["raconte-moi * blague","une blague (s'il te plait)"],
+            command: ["raconte-moi * blague", "une blague (s'il te plait)"],
             callback: async () => {
-                try{
+                try {
                     const blague = new BlaguesAPI("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODMxODYzMzA5MzcxNTcyMjQ1IiwibGltaXQiOjEwMCwia2V5IjoiSXNyVU5MOHR3WnhhNjBkTmJRUmxwU2UxZVlSbHNNcWdsdEpVV21tNzRVcWRJME50MHgiLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0wM1QxMjoyNDo0NiswMDowMCIsImlhdCI6MTY4ODM4NzA4Nn0.XDkCGavETYKlXCo3UaJbclqFAVh0VOdD2qmSY9tXzfw");
                     const d = await blague.random({
                         disallow: [
@@ -90,7 +93,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                     })
                     speak({ text: d.joke })
                     speak({ text: d.answer })
-                }catch(e){
+                } catch (e) {
                     speak({ text: "Desole, je ne retrouve pas de blague pour le moment" })
                 }
 
@@ -120,29 +123,29 @@ export const Dialog = ({ onShow, onArtiste }) => {
             }
         },
         {
-            command: ["au revoir (Rocco)", "A bientot (Rocco)","Deconnecte-toi"],
+            command: ["au revoir (Rocco)", "A bientot (Rocco)", "Deconnecte-toi"],
             callback: async () => {
-                try{
+                try {
                     await SpeechRecognition.stopListening()
                     const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
-                    if(port){
+                    if (port) {
                         const writer = await port.writable.getWriter();
-    
+
                         let enc = new TextEncoder();
                         await writer.write(enc.encode('100'));
                         writer.releaseLock();
                         await port.close()
                         replyUser("Rocco déconnécté")
                     }
-    
+
                     const rand = Math.floor(Math.random() * reponse.length)
                     replyUser(reponse[rand])
                     setListen(false)
                     setPort(null)
-                    setTimeout(function(){
-                    clearMessage()
-                    },2000)
-                }catch(e){
+                    setTimeout(function () {
+                        clearMessage()
+                    }, 2000)
+                } catch (e) {
 
                 }
             }
@@ -188,40 +191,63 @@ export const Dialog = ({ onShow, onArtiste }) => {
             }
         },
         {
-            command: ["Avancer","en français","Avance"],
+            command: ["Avancer", "en français", "Avance"],
             callback: () => {
-                sendRoccoData(port,'1',"D'accord maitre, J'avance",replyUser)
+                sendRoccoData(port, '1', "D'accord maitre, J'avance", replyUser)
             }
         },
         {
-            command: ["* l'obstacle","contourne (l'obstacle)","Esquive (Rocco)"],
+            command: ["* l'obstacle", "contourne (l'obstacle)", "Esquive (Rocco)"],
             callback: () => {
-                sendRoccoData(port,'2',"D'accord maitre, Je contourne l'obstacle",replyUser)
+                sendRoccoData(port, '2', "D'accord maitre, Je contourne l'obstacle", replyUser)
             }
         },
         {
-            command: ["Stop *","Stop (Rocco)","stoppe","top"],
+            command: ["Stop *", "Stop (Rocco)", "stoppe", "top"],
             callback: () => {
-                sendRoccoData(port,'100',"D'accord maitre, je m'arrete",replyUser)
+                sendRoccoData(port, '100', "D'accord maitre, je m'arrete", replyUser)
             }
         },
         {
-            command: ["recule *","recule (Rocco)","reculer"],
+            command: ["recule *", "recule (Rocco)", "reculer"],
             callback: () => {
-                sendRoccoData(port,'4',"D'accord maitre, je recule",replyUser)
+                sendRoccoData(port, '4', "D'accord maitre, je recule", replyUser)
             }
         },
         {
             command: ["Change * thème"],
             callback: () => {
-                speak({text:`Changement de theme en ${theme === DARK ? "jour" : "nuit"}`})
+                speak({ text: `Changement de theme en ${theme === DARK ? "jour" : "nuit"}` })
                 theme === DARK ? switchTheme(LIGHT) : switchTheme(DARK)
             }
         }
+        ,
+        {
+            command: "biographie de *",
+            callback: async (query) => {
+                const url = `https://fr.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=20&srsearch=${query}`
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                const json = await response.json();
+                console.log(json);
+                biographie(json.query.search)
+                showModalBiographi(true)
+
+
+                // setSearchResultWiki(json.query.search);
+                // setSearchInfo(json.query.searchinfo);
+
+                // onShow = setModalShow(true)
+
+            }
+        }
+
     ];
 
-    if (!SpeechRecognition.browserSupportsSpeechRecognition()) { 
-        speak({text:"Votre appareil ne supporte pas la reconnaissance vocale, veuillez reesayer avec un autre appareil"}) 
+    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+        speak({ text: "Votre appareil ne supporte pas la reconnaissance vocale, veuillez reesayer avec un autre appareil" })
     }
     const { resetTranscript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
@@ -230,7 +256,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
 
     // Deconnecte ROCCO
     const exitRoccoConnection = async () => {
-        if(port){
+        if (port) {
             const writer = await port.writable.getWriter();
 
             let enc = new TextEncoder();
@@ -240,26 +266,26 @@ export const Dialog = ({ onShow, onArtiste }) => {
         }
     }
 
-    const ecouter =async () => {
+    const ecouter = async () => {
         setListen(false)
         SpeechRecognition.stopListening()
         setLoadBluetoothError(false)
-        if(!port){
-            let p = await getPorts(setLoadBluetooth,speak);
-            if(p){
+        if (!port) {
+            let p = await getPorts(setLoadBluetooth, speak);
+            if (p) {
                 console.log("Bluetooth OK")
                 setPort(p)
                 setLoadBluetooth(false)
-                speak({text:"Rocco connecter avec succes"})
-                SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-            }else{
+                speak({ text: "Rocco connecter avec succes" })
+                SpeechRecognition.startListening({ language: "fr-FR", continuous: true });
+            } else {
                 console.log("Bluetooth non OK")
                 setLoadBluetoothError(true)
-                setTimeout(function(){
+                setTimeout(function () {
                     setLoadBluetooth(false)
-                    speak({text:"Erreur de connexion avec Rocco"})
-                    SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-                },2000)
+                    speak({ text: "Erreur de connexion avec Rocco" })
+                    SpeechRecognition.startListening({ language: "fr-FR", continuous: true });
+                }, 2000)
             }
         }
         setListen(true)
@@ -269,9 +295,9 @@ export const Dialog = ({ onShow, onArtiste }) => {
         exitRoccoConnection()
         replyUser("Rocco déconnécté")
         SpeechRecognition.stopListening()
-        setTimeout(function(){
+        setTimeout(function () {
             clearMessage()
-            },2000)
+        }, 2000)
     }
     useEffect(() => {
         sendRequest(finalTranscript);
@@ -283,17 +309,17 @@ export const Dialog = ({ onShow, onArtiste }) => {
     }, [finalTranscript])
     return (
         <>
-        
-        <motion.div
-            id="message"
-            className={css({
-                minHeight: "15rem",
-                maxHeight: "15rem",
-                overflowY:"scroll",
-                scrollbarWidth:"none",
-                
-            })}>
-                
+
+            <motion.div
+                id="message"
+                className={css({
+                    minHeight: "15rem",
+                    maxHeight: "15rem",
+                    overflowY: "scroll",
+                    scrollbarWidth: "none",
+
+                })}>
+
                 {dialogs.slice(id < 4 ? 0 : id - 3).map((value) => (
 
                     <motion.p
@@ -309,12 +335,12 @@ export const Dialog = ({ onShow, onArtiste }) => {
                     </motion.p>
                 ))}
                 {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
-            
+
             </motion.div>
             {listening && <div className="d-flex justify-content-center flex-row mb-4">
-                <Mic size="2rem"/>
+                <Mic size="2rem" />
                 <Radio size="2rem" />
-                </div>}
+            </div>}
             <div>
                 <div className="row">
                     <div className="col-sm-12 mb-2">
@@ -337,7 +363,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                             onClick={ecouter}
                             disabled={listen}
                         >
-                            Ecouter <Mic color="cyan" size="1rem"/>
+                            Ecouter <Mic color="cyan" size="1rem" />
                         </button>
                         <button className={" col-sm-4 mb-4 mt-2 btn btn-danger btn-block"}
 
@@ -348,7 +374,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                             Arreter <MicOff size="1rem" />
                         </button>
                     </div>
-                    <LoadingBluetoothConnection show={loadBluetooth} error={loadBluetoothError} setLoadBluetooth={setLoadBluetooth}/>
+                    <LoadingBluetoothConnection show={loadBluetooth} error={loadBluetoothError} setLoadBluetooth={setLoadBluetooth} />
                 </div>
             </div>
             <DialogMeteo />

@@ -16,21 +16,21 @@ export function Music({ artisteProps, onClearArtiste, modal }) {
     useEffect(() => {
         (async function () {
 
-        const url = "https://accounts.spotify.com/api/token"
-        const authParameters = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-        }
-        const result = await fetch(url, authParameters)
-        const data = await result.json()
-        setAccessToken(data.access_token)
-        await musicShow(data.access_token)
-        // localStorage.setItem("token", accessToken);
+            const url = "https://accounts.spotify.com/api/token"
+            const authParameters = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+            }
+            const result = await fetch(url, authParameters)
+            const data = await result.json()
+            setAccessToken(data.access_token)
+            await musicShow(data.access_token)
+            // localStorage.setItem("token", accessToken);
 
-        console.log("artiste dans le component", artisteProps)
+            console.log("artiste dans le component", artisteProps)
 
         })()
 
