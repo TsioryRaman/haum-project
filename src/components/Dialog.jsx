@@ -61,6 +61,13 @@ export const Dialog = ({ onShow, onArtiste, biographie, showModalBiographi }) =>
 
     const commands = [
         {
+            command: "qui es-tu",
+            callback: () => {
+                replyUser("Je suis un chatbot,egalement connu sous le nom de Rocco, un programme informatique conçu pour simuler une conversation humaine...")
+            }
+
+        },
+        {
             command: "*",
             callback: ({ command }) => {
 
