@@ -43,17 +43,35 @@ export const Dialog = ({ onShow, onArtiste }) => {
 
     const [port,setPort] = useState(null);
     const inp = useRef(null);
-    const onClick = (e) => {
-        sendRequest(inp.current.value);
-        if (!inp.current.value) {
-            replyUser("Dites quelque chose !")
-        } else {
-            setTimeout(function () {
-                replyUser('vous avez ecris ' + inp.current.value)
-                inp.current.value = null
-            }, 1000
-            )
+    const onClick = async (e) => {
+        e.preventDefault()
+        // sendRequest(inp.current.value);
+        switch(inp.current.value){
+            case '1':
+                await sendRoccoData(port,'1',"D'accord maitre, J'avance",replyUser)
+                break
+            case '2':
+                await sendRoccoData(port,'2',"D'accord maitre, Je contourne l'obstacle",replyUser)
+                break
+
+            case '4':
+                await sendRoccoData(port,'4',"D'accord maitre, je recule",replyUser)
+                break
+
+            case '100':
+                await sendRoccoData(port,'100',"D'accord maitre, je m'arrete",replyUser)
+                break
+
         }
+        // if (!inp.current.value === '2') {
+        //     replyUser("Dites quelque chose !")
+        // } else {
+        //     setTimeout(function () {
+        //         replyUser('vous avez ecris ' + inp.current.value)
+        //         inp.current.value = null
+        //     }, 1000
+        //     )
+        // }
     };
 
     const commands = [
@@ -244,6 +262,11 @@ export const Dialog = ({ onShow, onArtiste }) => {
         setListen(false)
         SpeechRecognition.stopListening()
         setLoadBluetoothError(false)
+        await enablePort();
+        setListen(true)
+    }
+
+    const enablePort = async () => {
         if(!port){
             let p = await getPorts(setLoadBluetooth,speak);
             if(p){
@@ -252,6 +275,10 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 setLoadBluetooth(false)
                 speak({text:"Rocco connecter avec succes"})
                 SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+                port?.addEventListener("disconnect", (event) => {
+                    // notify that the port has become unavailable
+                    speak({text:"Rocco s'est deconécté; veuillew le reconecter pour lùutiliser de nouvequ"})
+                });
             }else{
                 console.log("Bluetooth non OK")
                 setLoadBluetoothError(true)
@@ -262,8 +289,11 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 },2000)
             }
         }
-        setListen(true)
+
+        
+
     }
+
     const stopListen = () => {
         setListen(false)
         exitRoccoConnection()
