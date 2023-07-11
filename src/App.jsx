@@ -6,7 +6,7 @@ import style from "./assets/App.module.css";
 import { Settings, ChevronRight, ChevronLeft } from 'react-feather';
 import Lottie from 'react-lottie';
 import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
-
+import ModalSearchWiki from "./components/Modal";
 // 7 SEGMENT
 import SevenSegmentDisplay from 'seven-segment-display';
 import { Music } from "./components/music";
@@ -17,6 +17,8 @@ const setTime = number => number < 10 ? "0" + number : number
 
 function App() {
     const [showModal, setShowModal] = useState(false)
+    const [biographieTab, setBiographieTab] = useState([])
+    const [showModalBiographie, setShowModalBiographie] = useState(false)
     const [artiste, setArtiste] = useState("")
     let newDate = new Date();
     const [info, setInfo] = useState(false)
@@ -65,11 +67,12 @@ function App() {
         >
             <div
                 className={"container"}
-                style={{ minHeight: "100vh",position:"relative", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+                style={{ minHeight: "100vh", position: "relative", height: "100%", overflowX: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
             >
-                
+
                 <ButtonTheme />
                 <div>
+                    {showModalBiographie && <ModalSearchWiki biographie={biographieTab} bioClear={setBiographieTab} modal={setShowModalBiographie} />}
                     {showModal && <Music artisteProps={artiste} onClearArtiste={setArtiste} modal={setShowModal} />}
                     <Lottie
                         options={defaultOptions}
@@ -107,7 +110,7 @@ function App() {
                             className={"col-sm-12 col-md-6"}
                             style={{ marginTop: "80px" }}
                         >
-                            <Dialog onShow={setShowModal} onArtiste={setArtiste} />
+                            <Dialog onShow={setShowModal} onArtiste={setArtiste} biographie={setBiographieTab} showModalBiographi={setShowModalBiographie} />
                         </div>
                     </div>
                 </div>
