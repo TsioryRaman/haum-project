@@ -12,13 +12,15 @@ export const getPorts = async (loadConnection,speak) => {
     }
 }
 
-export const sendRoccoData = async (port,code,text,replyUser) => {
+export const sendRoccoData = async (port,code,text=null,replyUser) => {
     try{
         const writer = await port.writable.getWriter();
 
         let enc = new TextEncoder();
         await writer.write(enc.encode(code));
-        replyUser(text)
+        if(text!==null){
+            replyUser(text)
+        }
         writer.releaseLock();
         }catch(e){
             replyUser("Desole, Rocco n'est pas encore connecté")

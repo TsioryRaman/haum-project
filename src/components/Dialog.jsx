@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { DARK, DialogContext, LIGHT } from "../DialogContext";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { css } from "@emotion/css";
 import DialogMeteo from "./DialogMeteo";
 import SpeechRecognition, {
@@ -13,6 +13,7 @@ import { getPorts, sendRoccoData } from "../arduino/arduino";
 import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
 import { Mic,MicOff,Send,Radio } from "react-feather";
+import { ManualControl } from "./ManualControl";
 // Mot dite par l'utilisateur et repondu par la machine
 const Msg = ({ children, user = true }) => {
     return (
@@ -63,15 +64,6 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 break
 
         }
-        // if (!inp.current.value === '2') {
-        //     replyUser("Dites quelque chose !")
-        // } else {
-        //     setTimeout(function () {
-        //         replyUser('vous avez ecris ' + inp.current.value)
-        //         inp.current.value = null
-        //     }, 1000
-        //     )
-        // }
     };
 
     const commands = [
@@ -275,10 +267,6 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 setLoadBluetooth(false)
                 speak({text:"Rocco connecter avec succes"})
                 SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-                port?.addEventListener("disconnect", (event) => {
-                    // notify that the port has become unavailable
-                    speak({text:"Rocco s'est deconécté; veuillew le reconecter pour lùutiliser de nouvequ"})
-                });
             }else{
                 console.log("Bluetooth non OK")
                 setLoadBluetoothError(true)
@@ -289,8 +277,13 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 },2000)
             }
         }
-
-        
+        if(port){
+            port.addEventListener("disconnect", (event) => {
+                // notify that the port has become unavailable
+                speak({text:"Rocco s'est deconécté; veuillew le reconecter pour lùutiliser de nouvequ"})
+                setPort(null)
+            });
+        }
 
     }
 
@@ -382,6 +375,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 </div>
             </div>
             <DialogMeteo />
+            {port && <ManualControl port={port}/>}
         </>
     );
 };
