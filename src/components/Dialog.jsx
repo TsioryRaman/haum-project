@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { DARK, DialogContext, LIGHT } from "../DialogContext";
+import { DARK, DialogContext, LIGHT } from "../Context/DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
 import DialogMeteo from "./DialogMeteo";

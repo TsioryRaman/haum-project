@@ -1,15 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
 import * as serviceWorker from "./serviceWorker";
-import { DialogProvider } from "./DialogContext";
-
+import { DialogProvider } from "./Context/DialogContext";
+import { BrowserRouter, Switch, Route, Routes } from "react-router-dom";
+import { UserContextProvider } from "./Context/UserContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import { Login } from "./components/Login";
 
 ReactDOM.render(
-    <DialogProvider>
-        <App />
-    </DialogProvider>,
+    <UserContextProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    
+                    path="/"
+                    element={
+                        <ProtectedRoute>
+                            <DialogProvider>
+                                <App />
+                            </DialogProvider>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/login" element={<Login />} />
+            </Routes>
+        </BrowserRouter>
+    </UserContextProvider>,
     document.getElementById("root")
 );
 

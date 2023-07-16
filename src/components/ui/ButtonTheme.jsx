@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
-import { DARK, DialogContext, LIGHT } from "../../DialogContext";
+import { DARK, DialogContext, LIGHT } from "../../Context/DialogContext";
 import {Moon,Sun} from "react-feather";
 
 export const ButtonTheme = () => {

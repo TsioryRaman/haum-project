@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { DialogContext } from "../DialogContext";
+import { DialogContext } from "../Context/DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
 import "bootstrap/dist/css/bootstrap.min.css"

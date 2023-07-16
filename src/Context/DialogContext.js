@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { getMeteoForCity, getMeteoForCityFake } from "./services/meteo";
+import { getMeteoForCity, getMeteoForCityFake } from "../services/meteo";
 import {useSpeechSynthesis} from "react-speech-kit"
 export const DialogContext = createContext();
 
