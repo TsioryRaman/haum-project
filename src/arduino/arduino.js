@@ -8,7 +8,7 @@ export const getPorts = async (loadConnection,speak) => {
 
         return port;
     }catch(e){
-        
+        throw e;
     }
 }
 
@@ -22,5 +22,6 @@ export const sendRoccoData = async (port,code,text,replyUser) => {
         writer.releaseLock();
         }catch(e){
             replyUser("Desole, Rocco n'est pas encore connecté")
+            throw e;
         }
 }

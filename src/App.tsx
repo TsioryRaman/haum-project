@@ -1,26 +1,34 @@
-import React, { useState, useLayoutEffect, useEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Dialog } from "./components/Dialog";
 import Projectinfo from "./components/info/Projectinfo";
 import style from "./assets/App.module.css";
 import { Settings, ChevronRight, ChevronLeft } from "react-feather";
 import Lottie from "react-lottie";
-import animationData from "./Lotties/143850-cloud-robotics-abstract.json";
+import animationData from "./lotties/143850-cloud-robotics-abstract.json";
 
 // 7 SEGMENT
 import SevenSegmentDisplay from "seven-segment-display";
 import { Music } from "./components/music";
-import { DARK, DialogContext, LIGHT } from "./Context/DialogContext";
 import { ButtonTheme } from "./components/ui/ButtonTheme";
 import { LogoutButton } from "./components/ui/LogoutButton";
-const setTime = (number) => (number < 10 ? "0" + number : number);
+const setTime = (number:number):number => (number < 10 ? 0 + number : number);
+
+type DateType = {
+    jour:number;
+    mois:number;
+    année:number;
+    heure:number;
+    minutes:number;
+    seconds:number;
+}
 
 function App() {
-    const [showModal, setShowModal] = useState(false);
-    const [artiste, setArtiste] = useState("");
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [artiste, setArtiste] = useState<string|null>("");
     let newDate = new Date();
-    const [info, setInfo] = useState(false);
-    const [datehour, setDateHour] = useState({
+    const [info, setInfo] = useState<boolean>(false);
+    const [datehour, setDateHour] = useState<DateType>({
         jour: newDate.getDate(),
         mois: newDate.getMonth() + 1,
         année: newDate.getFullYear(),
@@ -54,6 +62,18 @@ function App() {
             preserveAspectRatio: "xMidYMid slice",
         },
     };
+    useEffect(()=> {
+        (async ()=>{
+            const _response = await fetch("http://localhost:3000/user/1",{
+                method:"GET",
+                headers:{
+                    "Content-type":"application/json",
+                },
+                credentials:"include"
+            })
+            console.log("response")
+        })()
+    },[])
 
     return (
         <div style={{ overflow: "hidden", position: "relative" }}>

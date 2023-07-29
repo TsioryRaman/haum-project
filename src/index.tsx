@@ -3,9 +3,9 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import * as serviceWorker from "./serviceWorker";
-import { DialogProvider } from "./Context/DialogContext";
-import { BrowserRouter, Switch, Route, Routes } from "react-router-dom";
-import { UserContextProvider } from "./Context/UserContext";
+import { DialogProvider } from "./context/DialogContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { UserContextProvider } from "./context/UserContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { Login } from "./components/Login";
 

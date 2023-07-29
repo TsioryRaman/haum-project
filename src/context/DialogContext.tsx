@@ -1,10 +1,26 @@
-import React, { createContext, useState } from "react";
-import { getMeteoForCity, getMeteoForCityFake } from "../services/meteo";
-import {useSpeechSynthesis} from "react-speech-kit"
-export const DialogContext = createContext();
+import {
+    FunctionComponent,
+    PropsWithChildren,
+    createContext,
+    useState,
+} from "react";
+import { getMeteoForCity } from "../services/meteo";
+import { useSpeechSynthesis } from "react-speech-kit";
+export const DialogContext = createContext<any>(null);
 
 export const DARK = "dark";
-export const LIGHT = "light"
+export const LIGHT = "light";
+
+export type DialogType = {
+    msg: string;
+    id: number;
+    user: boolean;
+};
+
+type DialogsType = {
+    dialogs: DialogType[];
+    city: string[];
+};
 
 const initialState = {
     dialogs: [
@@ -12,20 +28,22 @@ const initialState = {
     ],
     city: ["Antananarivo", "Mahajanga", "Paris"],
 };
-export const DialogProvider = ({ children }) => {
+export const DialogProvider: FunctionComponent<PropsWithChildren<any>> = ({
+    children,
+}) => {
     const [dialogs, setDialogs] = useState(initialState.dialogs);
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
-    const {speak} = useSpeechSynthesis();
-    const [theme,setTheme] = useState(LIGHT)
-    const getMeteo = async (city, msg = "") => {
+    const { speak } = useSpeechSynthesis();
+    const [theme, setTheme] = useState(LIGHT);
+    const getMeteo = async (city:string, msg = "") => {
         console.log("city ", city);
         setLoading(true);
         closeMeteo();
 
         try {
             const response = await getMeteoForCity(city);
-            const data = response.data
+            const data = response.data;
             console.log("response", data);
             replyUser(
                 `Meteo à ${city}: 
@@ -38,23 +56,23 @@ export const DialogProvider = ({ children }) => {
         } catch (error) {
             setLoading(false);
             console.error(error);
-            replyUser(
-                "Ville non pris en charge pour le moment"
-            );
+            replyUser("Ville non pris en charge pour le moment");
         }
     };
-    const switchTheme = (t) => {
-        setTheme(t)
-        const root = document.querySelector("#root");
-        if(t === LIGHT){
-            root.classList.remove("vicious_stance")
-            root.classList.add("sky_glider")
+    const switchTheme = (t:string) => {
+        setTheme(t);
+        const root: HTMLDivElement | null = document.querySelector("#root");
+        if (root) {
+            if (t === LIGHT) {
+                root.classList.remove("vicious_stance");
+                root.classList.add("sky_glider");
+            }
+            if (t === DARK) {
+                root.classList.remove("premium_white");
+                root.classList.add("vicious_stance");
+            }
         }
-        if(t === DARK){
-            root.classList.remove("premium_white")
-            root.classList.add("vicious_stance")
-        }
-    }
+    };
     const askForMeteo = () => {
         setMeteo(true);
     };
@@ -62,18 +80,22 @@ export const DialogProvider = ({ children }) => {
         setMeteo(false);
     };
     const pushMessage = (msg = "", user = true) => {
-        setDialogs((prevState)=>[...prevState, { msg, id: prevState.length, user }]);
-        
-        let element
-        if(!element){
-            element = document.querySelector("#message")
+        setDialogs((prevState) => [
+            ...prevState,
+            { msg, id: prevState.length, user },
+        ]);
+
+        let element;
+        if (!element) {
+            element = document.querySelector("#message");
         }
-        console.log(element.scrollTop)
-        element.scrollTo({top:element.scrollHeight,behavior:"smooth"})
+        if(element!==null){
+            element.scrollTo({ top: element.scrollHeight, behavior: "smooth" });
+        }
     };
     const clearMessage = () => {
-        setDialogs(initialState.dialogs)
-    }
+        setDialogs(initialState.dialogs);
+    };
     const sendRequest = (msg = "") => {
         if (msg.length <= 0) return;
         pushMessage(msg);
@@ -81,8 +103,8 @@ export const DialogProvider = ({ children }) => {
     const replyUser = (msg = "") => {
         if (msg.length <= 0) return;
         speak({
-            text:msg
-        })
+            text: msg,
+        });
         pushMessage(msg, false);
     };
     return (
@@ -100,7 +122,7 @@ export const DialogProvider = ({ children }) => {
                 loading,
                 switchTheme,
                 theme,
-                clearMessage
+                clearMessage,
             }}
         >
             {children}

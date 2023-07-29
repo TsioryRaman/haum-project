@@ -1,16 +1,16 @@
-import { useContext, useState } from "react";
+import { FormEventHandler, useContext, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { UserContext } from "../Context/UserContext";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-    const {setUser} = useContext(UserContext)
-    const [username,setUsername] = useState("")
-    const [password,setPassword] = useState("")
-    const [validate,setValidate] = useState(true)
+    const {user,login} = useContext(UserContext)
+    const [username,setUsername] = useState<string>("")
+    const [password,setPassword] = useState<string>("")
+    const [validate,setValidate] = useState<boolean>(true)
     const navigate = useNavigate();
 
-    const handleChange = (e) => {
+    const handleChange = (e:any) => {
         if(e.target.name==="username"){
             setUsername(e.target.value)
             if(username.length > 5){
@@ -21,27 +21,16 @@ export const Login = () => {
         setPassword(e.target.value)
     }
 
-    const submit = async (e) => {
+    const submit = async (e:any) => {
         e.preventDefault()
-        try{
-            const response = await fetch("http://localhost:3000/auth/login",{
-                method:"POST",
-                headers:{
-                    "Content-type":"application/json"
-                },
-                body:JSON.stringify({username,password})
-            })
-            if(response.ok){
-                const _user = await response.json()
-                console.log(_user)
-                setUser({..._user,isAuthenticated:true})
-
-                // Naviguer sur "/"
+        const data = new FormData(e.target)
+        try {
+            await login(data.get("username"),data.get("password"))
+            if(user){
                 navigate("/")
             }
+        }catch(e){
             setValidate(false)
-        }catch(error){
-            console.log("error:",error)
         }
     }
 
@@ -57,7 +46,7 @@ export const Login = () => {
             justifyContent: "center",
             flexDirection: "column",
         }}>
-        <Form validated={!validate} onSubmit={submit}>
+        <Form className="col-md-3" validated={!validate} onSubmit={submit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control name="username" type="text" onChange={handleChange} value={username} placeholder="Nom d'utilisateur ROCCO" />
@@ -69,7 +58,7 @@ export const Login = () => {
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control value={password} name="password" onChange={handleChange} type="password" placeholder="Mot de passe" />
+                <Form.Control style={{boxSizing:"border-box"}} value={password} name="password" onChange={handleChange} type="password" placeholder="Mot de passe" />
                 {!validate && 
                 <Form.Text className="text-danger">
                     Entrer un mot de passe valide

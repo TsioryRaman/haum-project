@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
 import {LogOut} from "react-feather";
-import { UserContext } from "../../Context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 export const LogoutButton = () => {
     const {logout} = useContext(UserContext)

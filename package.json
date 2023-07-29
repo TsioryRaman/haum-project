@@ -26,6 +26,11 @@
   "engines": {},
   "dependencies": {
     "@emotion/css": "^11.1.3",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.2",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/react-lottie": "^1.2.6",
     "axios": "^0.21.0",
     "blagues-api": "^2.1.0",
     "bootstrap": "^5.3.0",
@@ -41,6 +46,7 @@
     "react-scripts": "^4.0.1",
     "react-speech-kit": "^3.0.1",
     "react-speech-recognition": "^3.6.0",
-    "seven-segment-display": "^0.2.0"
+    "seven-segment-display": "^0.2.0",
+    "typescript": "^5.1.6"
   }
 }

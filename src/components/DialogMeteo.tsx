@@ -1,11 +1,11 @@
 import React, { useContext, useRef } from "react";
-import { DialogContext } from "../Context/DialogContext";
+import { DialogContext } from "../context/DialogContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "@emotion/css";
 import "bootstrap/dist/css/bootstrap.min.css"
 import { ActionButton, ActionButtonList } from "./ui/ActionButton.jsx";
 
-const DialogMeteo = ({ children }) => {
+const DialogMeteo = () => {
     const {
         city,
         getMeteo,
@@ -15,13 +15,14 @@ const DialogMeteo = ({ children }) => {
         sendRequest,
     } = useContext(DialogContext);
 
-    const sinp = useRef(null);
+    const sinp = useRef<HTMLInputElement>(null);
 
     const searchForMeteo = () => {
-        const city = sinp.current.value;
-        console.log(city)
-        getMeteo(city);
-        closeMeteo();
+        if(sinp.current){
+            const city = sinp.current.value;
+            getMeteo(city);
+            closeMeteo();
+        }
     };
     return (
         <>
@@ -36,10 +37,10 @@ const DialogMeteo = ({ children }) => {
                     </ActionButton>
                 )}
             </ActionButtonList>
-            <AnimatePresence>
+            {/* <AnimatePresence> */}
                 <ActionButtonList>
                     {meteoDialog &&
-                        city.map((value, index) => (
+                        city.map((value:string, index:number) => (
                             <ActionButton
                                 key={"meteo-city-" + index}
                                 onClick={() => {
@@ -70,7 +71,7 @@ const DialogMeteo = ({ children }) => {
                         <button className={"btn btn-info mt-3"} onClick={searchForMeteo}>Chercher</button>
                     </motion.div>
                 )}
-            </AnimatePresence>
+            {/* </AnimatePresence> */}
         </>
     );
 };

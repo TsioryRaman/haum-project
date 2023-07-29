@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { DARK, DialogContext, LIGHT } from "../Context/DialogContext";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { FunctionComponent, PropsWithChildren, useContext, useEffect, useRef, useState } from "react";
+import { DARK, DialogContext, DialogType, LIGHT } from "../context/DialogContext";
+import { motion } from "framer-motion";
 import { css } from "@emotion/css";
 import DialogMeteo from "./DialogMeteo";
 import SpeechRecognition, {
@@ -14,7 +14,20 @@ import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
 import { Mic,MicOff,Send,Radio } from "react-feather";
 // Mot dite par l'utilisateur et repondu par la machine
-const Msg = ({ children, user = true }) => {
+type MsgProps = {
+    user:boolean;
+}
+type DialogProps = {
+    onShow: React.Dispatch<React.SetStateAction<boolean>>    ,
+    onArtiste: React.Dispatch<React.SetStateAction<string|null>>
+}
+
+type MeteoCommandType = {
+    mot:string;
+    pronom:string;
+    city:string;
+}
+const Msg:FunctionComponent<PropsWithChildren<MsgProps>> = ({children,user = true}) => {
     return (
         <motion.p
             className={css({
@@ -33,7 +46,7 @@ const Msg = ({ children, user = true }) => {
     );
 };
 
-export const Dialog = ({ onShow, onArtiste }) => {
+export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => {
 
     const { speak } = useSpeechSynthesis();
     const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme,clearMessage } = useContext(DialogContext);
@@ -41,28 +54,18 @@ export const Dialog = ({ onShow, onArtiste }) => {
     const [loadBluetooth, setLoadBluetooth] = useState(false);
     const [loadBluetoothError,setLoadBluetoothError] = useState(false)
 
-    const [port,setPort] = useState(null);
-    const inp = useRef(null);
-    const onClick = (e) => {
-        sendRequest(inp.current.value);
-        if (!inp.current.value) {
-            replyUser("Dites quelque chose !")
-        } else {
-            setTimeout(function () {
-                replyUser('vous avez ecris ' + inp.current.value)
-                inp.current.value = null
-            }, 1000
-            )
+    const [port,setPort] = useState<any>(null);
+    const inp = useRef<HTMLInputElement>(null);
+    const onClick = () => {
+        if(inp.current){
+            sendRequest(inp.current.value);
+            if (!inp.current.value) {
+                replyUser("Dites quelque chose !")
+            }
         }
     };
 
     const commands = [
-        {
-            command: "*",
-            callback: ({command}) => {
-
-            }
-        },
         {
             command: ["Bonjour (Rocco)","Salut (Rocco)","Hello (Rocco)","Rocco (Rocco)","Hi (Rocco)"],
             callback: () => {
@@ -72,7 +75,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
         },
         {
             command: ["Donne-moi * météo * *"],
-            callback: (mot, pronom, city, { command, finalTranscript }) => {
+            callback: ({mot, pronom, city}:MeteoCommandType) => {
                 getMeteo(city);
             },
         },
@@ -100,11 +103,10 @@ export const Dialog = ({ onShow, onArtiste }) => {
         },
         {
             command: "(l')album de * (s'il te plait)",
-            callback: (standard) => {
+            callback: (standard:any) => {
                 const indexDe = standard.indexOf('de')
-                const artiste = standard.slice(indexDe + 1)
-
-                onArtiste(artiste)
+                const artiste:string = standard.slice(indexDe + 1)
+                if(artiste){onArtiste(artiste)}
 
                 onShow(x => !x)
 
@@ -127,14 +129,12 @@ export const Dialog = ({ onShow, onArtiste }) => {
                     const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
                     if(port){
                         const writer = await port.writable.getWriter();
-    
                         let enc = new TextEncoder();
                         await writer.write(enc.encode('100'));
                         writer.releaseLock();
                         await port.close()
                         replyUser("Rocco déconnécté")
                     }
-    
                     const rand = Math.floor(Math.random() * reponse.length)
                     replyUser(reponse[rand])
                     setListen(false)
@@ -294,7 +294,7 @@ export const Dialog = ({ onShow, onArtiste }) => {
                 
             })}>
                 
-                {dialogs.slice(id < 4 ? 0 : id - 3).map((value) => (
+                {dialogs.slice(id < 4 ? 0 : id - 3).map((value:DialogType) => (
 
                     <motion.p
                         className={css({
