@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { ApiFetch, HTTP_METHOD } from "../api"
 
-type PostType = [data:Object,loadData: (url:string,method:HTTP_METHOD,json?:any) => void]
+type PostType = [data:Object,loadData: (url:string,method:HTTP_METHOD,json?:any) => Promise<any>]
 
 export const usePost = () : PostType => {
     const [data,setData] = useState<any>({}) 

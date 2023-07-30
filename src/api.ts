@@ -15,7 +15,7 @@ export const ApiFetch = async (url:string,method:HTTP_METHOD,json?:any) => {
             credentials:"include"
         })
         if(response.ok){
-            return response.json()
+            return response
         }
         console.log(response)
         throw new ApiFetchError("Une erreur s'est produite",response)

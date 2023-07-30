@@ -8,9 +8,6 @@ import { getMeteoForCity } from "../services/meteo";
 import { useSpeechSynthesis } from "react-speech-kit";
 export const DialogContext = createContext<any>(null);
 
-export const DARK = "dark";
-export const LIGHT = "light";
-
 export type DialogType = {
     msg: string;
     id: number;
@@ -35,7 +32,6 @@ export const DialogProvider: FunctionComponent<PropsWithChildren<any>> = ({
     const [loading, setLoading] = useState(false);
     const [meteoDialog, setMeteo] = useState(false);
     const { speak } = useSpeechSynthesis();
-    const [theme, setTheme] = useState(LIGHT);
     const getMeteo = async (city:string, msg = "") => {
         console.log("city ", city);
         setLoading(true);
@@ -59,20 +55,7 @@ export const DialogProvider: FunctionComponent<PropsWithChildren<any>> = ({
             replyUser("Ville non pris en charge pour le moment");
         }
     };
-    const switchTheme = (t:string) => {
-        setTheme(t);
-        const root: HTMLDivElement | null = document.querySelector("#root");
-        if (root) {
-            if (t === LIGHT) {
-                root.classList.remove("vicious_stance");
-                root.classList.add("sky_glider");
-            }
-            if (t === DARK) {
-                root.classList.remove("premium_white");
-                root.classList.add("vicious_stance");
-            }
-        }
-    };
+
     const askForMeteo = () => {
         setMeteo(true);
     };
@@ -120,8 +103,6 @@ export const DialogProvider: FunctionComponent<PropsWithChildren<any>> = ({
                 replyUser,
                 closeMeteo,
                 loading,
-                switchTheme,
-                theme,
                 clearMessage,
             }}
         >

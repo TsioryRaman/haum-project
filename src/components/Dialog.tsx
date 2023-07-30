@@ -1,5 +1,5 @@
 import React, { FunctionComponent, PropsWithChildren, useContext, useEffect, useRef, useState } from "react";
-import { DARK, DialogContext, DialogType, LIGHT } from "../context/DialogContext";
+import { DialogContext, DialogType } from "../context/DialogContext";
 import { motion } from "framer-motion";
 import { css } from "@emotion/css";
 import DialogMeteo from "./DialogMeteo";
@@ -13,6 +13,7 @@ import { getPorts, sendRoccoData } from "../arduino/arduino";
 import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
 import { Mic,MicOff,Send,Radio } from "react-feather";
+import { DARK, LIGHT, startAnimation } from "../context/ThemeContext";
 // Mot dite par l'utilisateur et repondu par la machine
 type MsgProps = {
     user:boolean;
@@ -220,9 +221,9 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
         }
     ];
 
-    if (!SpeechRecognition.browserSupportsSpeechRecognition()) { 
-        speak({text:"Votre appareil ne supporte pas la reconnaissance vocale, veuillez reesayer avec un autre appareil"}) 
-    }
+    // if (!SpeechRecognition.browserSupportsSpeechRecognition()) { 
+    //     speak({text:"Votre appareil ne supporte pas la reconnaissance vocale, veuillez reesayer avec un autre appareil"}) 
+    // }
     const { resetTranscript, listening, finalTranscript } = useSpeechRecognition({
         language: "fr-FR",
         commands
@@ -274,12 +275,12 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
             },2000)
     }
     useEffect(() => {
+    startAnimation()
+    },[])
+    useEffect(() => {
         sendRequest(finalTranscript);
         resetTranscript();
 
-        // return function(){
-        //     if(port){port.close()}
-        // }
     }, [finalTranscript])
     return (
         <>
@@ -290,10 +291,8 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
                 minHeight: "15rem",
                 maxHeight: "15rem",
                 overflowY:"scroll",
-                scrollbarWidth:"none",
-                
+                scrollbarWidth:"none"
             })}>
-                
                 {dialogs.slice(id < 4 ? 0 : id - 3).map((value:DialogType) => (
 
                     <motion.p
@@ -302,6 +301,7 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
                             fontSize: 32,
                             paddingBottom: 10,
                             textAlign: value.user ? "right" : "left",
+                            textShadow: "5px 5px 10px white"
                         })}
                         key={value.id}
                     >
@@ -309,7 +309,6 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
                     </motion.p>
                 ))}
                 {loading && <Msg key={"im-searching"} user={false}>Je cherche...</Msg>}
-            
             </motion.div>
             {listening && <div className="d-flex justify-content-center flex-row mb-4">
                 <Mic size="2rem"/>

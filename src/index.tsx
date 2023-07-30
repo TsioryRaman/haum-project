@@ -1,33 +1,16 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import * as serviceWorker from "./serviceWorker";
-import { DialogProvider } from "./context/DialogContext";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { UserContextProvider } from "./context/UserContext";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import { Login } from "./components/Login";
+import { ThemeContextProvider } from "./context/ThemeContext";
+import { Page } from "./routes/Page";
 
 ReactDOM.render(
-    <UserContextProvider>
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <DialogProvider>
-                                <App />
-                            </DialogProvider>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="/login" element={<Login />} />
-            </Routes>
-        </BrowserRouter>
-    </UserContextProvider>,
+    <ThemeContextProvider>
+        <UserContextProvider>
+            <Page />
+        </UserContextProvider>
+    </ThemeContextProvider>,
     document.getElementById("root")
 );
 

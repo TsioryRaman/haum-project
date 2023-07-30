@@ -1,6 +1,6 @@
-import React, { useContext, useRef } from "react";
+import { useContext, useRef } from "react";
 import { DialogContext } from "../context/DialogContext";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { css } from "@emotion/css";
 import "bootstrap/dist/css/bootstrap.min.css"
 import { ActionButton, ActionButtonList } from "./ui/ActionButton.jsx";
