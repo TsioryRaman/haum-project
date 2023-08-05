@@ -1,15 +1,17 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
 import * as serviceWorker from "./serviceWorker";
-import { DialogProvider } from "./DialogContext";
-
+import { UserContextProvider } from "./context/UserContext";
+import { ThemeContextProvider } from "./context/ThemeContext";
+import { Page } from "./routes/Page";
+import "./index.css"
 
 ReactDOM.render(
-    <DialogProvider>
-        <App />
-    </DialogProvider>,
+    <ThemeContextProvider>
+        <UserContextProvider>
+            <Page />
+        </UserContextProvider>
+    </ThemeContextProvider>,
     document.getElementById("root")
 );
 

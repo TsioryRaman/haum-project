@@ -24,23 +24,25 @@
     -->
         <title>ROCCO</title>
         <style>
+            @import url('https://fonts.cdnfonts.com/css/roboto');
             html,
             body {
-                font-family: "Inconsolata", "monospace";
                 width: 100%;
                 min-height: 100vh;
                 margin: 0;
                 padding: 0;
             }
-            *{
+            * {
+                font-faily:"Jura"!important;
                 color: white;
                 scroll-behavior: smooth;
             }
-            #message::-webkit-scrollbar{
+            #message::-webkit-scrollbar {
                 display: none;
             }
             input:not([type]),
             input[type="password"]:not(.browser-default),
+            input[type="text"]:not(.browser-default),
             input[type="email"]:not(.browser-default),
             input[type="url"]:not(.browser-default),
             input[type="time"]:not(.browser-default),
@@ -54,14 +56,38 @@
                 outline: none;
                 -webkit-box-shadow: none;
                 box-shadow: none;
-                -webkit-box-sizing: content-box;
-                box-sizing: content-box;
+                box-shadow:none;
+                border:none;
             }
+            #background__theme {
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                z-index: 0;
+                z-index: -1;
+            }
+            #background__theme__anim {
+                position: absolute;
+                top: 0;
+                right: 50%;
+                height: 100%;
+                width: 50%;
+                z-index: 0;
+                background: red;
+                filter:brightness(60%);
+                display:none;
+
+            }
+            
+            
         </style>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div class="sky_glider" id="root"></div>
+        <div id="root"></div>
+        <div class="" id="background__theme"></div>
         <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -72,4 +98,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     --></body>
+    <script>
+    </script>
 </html>

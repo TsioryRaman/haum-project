@@ -1,0 +1,67 @@
+.card__top {
+    background: red;
+    position: absolute;
+    width: 50%;
+    top:0;
+    height: calc(125% / 3);
+    transform: translateY(-25%);
+    right: 0;
+}
+.card__right{
+    background: green;
+    position: absolute;
+    width: 50%;
+    height: calc(125% / 3);
+
+    transform: translateX(-25%);
+    left: 0;
+}
+.card__bottom {
+    background: blue;
+    position: absolute;
+    width: 100%;
+    height: calc(100% / 3);
+
+    transform: translateY(25%);
+    bottom: 0;
+}
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header__signup {
+    padding: 1rem 2rem;
+    transform: translateY(calc(-1 * (calc(50% + 2rem))));
+    background: rgba(6, 10, 202, 0.712);
+}
+.signup__presentation{
+    position: relative;
+}
+.signup__presentation::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    right:0;
+    width: 50%;
+    height: 50%;
+    background-color: #194fc49d;
+    z-index: -1;
+    transition-duration: .3s;
+}
+.signup__presentation::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left:0;
+    width: 50%;
+    height: 50%;
+    background-color: #194fc49d;
+    z-index: -1;
+    transition-duration: .3s;
+}
+.signup__presentation:hover::after,
+.signup__presentation:hover::before{
+
+    background-color: rgb(255, 255, 255);
+}

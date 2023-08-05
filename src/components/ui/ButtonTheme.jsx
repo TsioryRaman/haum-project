@@ -1,10 +1,10 @@
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
-import { DARK, DialogContext, LIGHT } from "../../DialogContext";
 import {Moon,Sun} from "react-feather";
+import { DARK, LIGHT, ThemeContext } from "../../context/ThemeContext";
 
 export const ButtonTheme = () => {
-    const {theme,switchTheme} = useContext(DialogContext);
+    const {theme,switchTheme} = useContext(ThemeContext);
 
     const handleThemeChange = () => {
         theme === DARK ? switchTheme(LIGHT) : switchTheme(DARK)

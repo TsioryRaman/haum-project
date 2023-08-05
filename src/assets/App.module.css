@@ -30,3 +30,55 @@
     transform: rotate(0deg);
   }
 }
+
+.bg {
+  position: fixed;
+  top:0;
+  width:100%;
+  min-height: 100vh;
+  aspect-ratio: 16 / 9;
+  background: url("image/background_flat.jpg");
+  background-position:center;
+  background-size:cover;
+  z-index: -1;
+}
+
+.bg::before {
+  content:"";
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  opacity: .9;
+  z-index: 1;
+  background:linear-gradient(to right,#00000071 30%, rgba(0, 0, 0, 0.514) 50% ,rgba(0,0,0,.2) 70%);
+}
+
+.city {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to right, #000000 30%, rgba(0,0,0,.9) 50% ,rgba(0,0,0,.2) 70%);
+}
+.city_overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  opacity: .7;
+  animation: blue_red infinite 2s;
+}
+
+@keyframes blue_red {
+  0% {
+    background: blue;
+  }
+  50% {
+    background: red;
+  }
+  100% {
+    background: blue;
+  }
+}
