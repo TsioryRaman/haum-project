@@ -14,6 +14,7 @@ export const UserContextProvider = ({ children }) => {
     // const navigate = useNavigate()
     // const [data,loadData] = usePost()
     const [user, setUser] = useState(checkLocalStorage())
+    const [loading,setLoading] = useState(false)
     const updateUser = (user) => {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
@@ -45,21 +46,23 @@ export const UserContextProvider = ({ children }) => {
 
     const signup = async (email, lastname,address,username, password) => {
         try {
+            setLoading(true)
             const response = await ApiFetch("http://localhost:3000/user", HTTP_METHOD.POST, { username, password,email, lastname,address})
             console.log(response)
             if(response.ok){
                 const data = await response.json()
                 await login(data.username,password)
+                setLoading(false)
             }
-
+            setLoading(false)
         } catch (error) {
-
+            setLoading(false)
             console.error("error:", error)
             throw error
         }
     }
     return (
-        <UserContext.Provider value={{ user, setUser: updateUser, logout, login,signup }}>
+        <UserContext.Provider value={{ user, setUser: updateUser, logout, login,signup,loading }}>
             {children}
         </UserContext.Provider>
     )

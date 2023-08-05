@@ -22,7 +22,7 @@ export const Page = () => {
                     element={
                         <ProtectedRoute>
                             <DialogProvider>
-                                <div className={style.bg}>Cool</div>
+                                <div className={style.bg}></div>
 
                                 <App />
                             </DialogProvider>
@@ -33,7 +33,7 @@ export const Page = () => {
                     path="/login"
                     element={
                         <PublicRoute>
-                            <div className={style.bg}>Cool</div>
+                            <div className={style.bg}></div>
 
                             <Login />
                         </PublicRoute>
@@ -43,7 +43,7 @@ export const Page = () => {
                     path="/signup"
                     element={
                         <PublicRoute>
-                            <div className={style.bg}>Cool</div>
+                            <div className={style.bg}></div>
                             <Signup />
                         </PublicRoute>
                     }

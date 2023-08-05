@@ -12,8 +12,6 @@ export const defaultOptions = {
 export const Error404 = () => {
     
     return (
-        <motion.div style={{minHeight:"100vh",maxHeight:"100vh",width:"100%",height:"100%"}}>
-                <Lottie options={defaultOptions} />
-        </motion.div>
+                <Lottie height={900} width={750} options={defaultOptions} />
     )
 }

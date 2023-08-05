@@ -4,6 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { UserContextProvider } from "./context/UserContext";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import { Page } from "./routes/Page";
+import "./index.css"
 
 ReactDOM.render(
     <ThemeContextProvider>

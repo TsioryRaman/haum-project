@@ -22,9 +22,10 @@ export const startAnimation = () => {
         _leftElemet.style.width = "50%";
         element.style.display = "block";
         element.animate([
-            {background: "blue"},
-            {background: "red"},
-            {background: "blue"},
+            {background: "rgba(43,29,121,.8)"},
+            {background: "rgba(43,29,121,.8)"},
+            {background: "rgba(0,0,255,.5)"},
+            {background: "rgba(43,29,121,.8)"},
         ],{duration:5000,iterations:Infinity})
     }
     
@@ -66,14 +67,6 @@ export const ThemeContextProvider: FunctionComponent<
             document.querySelector("#background__theme");
         if (root) {
             animateTheme(root,t)
-            // if (t === LIGHT) {
-            //     root.classList.remove("vicious_stance");
-            //     root.classList.add("sky_glider");
-            // }
-            // if (t === DARK) {
-            //     root.classList.remove("premium_white");
-            //     root.classList.add("vicious_stance");
-            // }
         }
     };
 
