@@ -79,9 +79,13 @@ export const Signup = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                     style={{width:"100%"}}
+                    exit={{opacity:0}}
                 >
             <motion.div className={`col-lg-8 col-md-6 col-sm-12 d-flex flex-column justify-content-center align-items-center ${style.signup__presentation}`} style={{background:"#100f4ce3"}}>
-            <motion.div className="d-flex">
+            <motion.div className="d-flex"
+                initial={{opacity:0}}
+                animate={{opacity:0.8}}
+                transition={{duration:1,delay:0.6}}>
                         <Lottie
                             options={defaultOptions}
                             height={150}
@@ -96,13 +100,13 @@ export const Signup = () => {
                         />
                     </motion.div>
 
-                    <motion.h2 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.6,duration:1}}><span style={{fontFamily:"Jura"}}>ROCCO</span>, votre compagnon de tout les jours</motion.h2>
+                    <motion.h2 initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1,duration:2.4}}><span style={{fontFamily:"Jura"}}>ROCCO</span>, votre compagnon de tout les jours</motion.h2>
             </motion.div>
             <Card className="col-md-6 col-lg-4 col-sm-12 px-5" style={{position:"relative",background:"transparent", padding:"2rem",border:"none",borderTopLeftRadius:"0px",borderBottomLeftRadius:"0px"}}>
 
             <motion.div
                     style={{background:"#1a1e7f",position:"absolute",top:"0",bottom:"0",right:"0",width:"100%",height:"100%",zIndex:-1}}></motion.div>
-                    <motion.h3 initial={{opacity:0}} transition={{duration:0.8,delay:0.6}} animate={{opacity:1}} className={`text-white text-center shadow rounded text-uppercase ${style.header__signup}`}>Enregistrement de <span style={{fontFamily:"Jura"}}>ROCCO</span></motion.h3>
+                    <motion.h3 initial={{opacity:0}} transition={{duration:0.8,delay:0.6}} animate={{opacity:1}} className={`text-white text-left shadow rounded text-uppercase ${style.header__signup}`}>Enregistrement <span style={{fontFamily:"Jura"}}>ROCCO</span></motion.h3>
                     <Form validated={!validate} onSubmit={submit}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Email</Form.Label>
