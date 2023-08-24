@@ -75,7 +75,7 @@ function Home() {
     };
 
     return (
-        <div style={{ overflow: "hidden", position: "relative" }}>
+        <motion.div style={{ overflow: "hidden", position: "relative" }}>
             <motion.div
                 id="background__theme__anim"
                 initial={{ opacity: 0, y: "-100%" }}
@@ -124,11 +124,11 @@ function Home() {
                             src={ispm}
                             alt="logo__ispm"
                             style={{
-                                height: "12.5rem",
-                                width: "14.5rem",
+                                height: "8.5rem",
+                                width: "auto",
                                 position: "absolute",
                                 top: 40,
-                                left: -100,
+                                left: 0,
                                 zIndex: 10,
                             }}
                         />
@@ -138,7 +138,7 @@ function Home() {
                             style={{ marginTop: "80px" }}
                         >
                             <motion.h1
-                                style={{ fontSize: "2.5rem" }}
+                                style={{ fontSize: "2.5rem",fontFamily:"Jura" }}
                                 className={"text-right"}
                                 initial={{ opacity: 0, y: -80 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -212,7 +212,7 @@ function Home() {
             </div>
 
             <Projectinfo showInfo={showInfo} info={info} />
-        </div>
+        </motion.div>
     );
 }
 
