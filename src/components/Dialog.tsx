@@ -316,7 +316,7 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
                 </div>}
             <div>
                 <div className="row">
-                    <div className="col-sm-12 mb-2">
+                    <div className="9px-sm-12 mb-2">
                         <input
                             type="text"
                             ref={inp}
