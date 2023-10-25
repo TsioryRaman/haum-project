@@ -254,24 +254,25 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
         SpeechRecognition.stopListening()
         setLoadBluetoothError(false)
         try{
-            if(!port){
-                let p = await getPorts(setLoadBluetooth,speak);
-                if(p){
-                    console.log("Bluetooth OK")
-                    setPort(p)
-                    setLoadBluetooth(false)
-                    speak({text:"Rocco connecter avec succes"})
-                    SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-                }else{
-                    console.log("Bluetooth non OK")
-                    setLoadBluetoothError(true)
-                    setTimeout(function(){
-                        setLoadBluetooth(false)
-                        speak({text:"Erreur de connexion avec Rocco"})
-                        SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-                    },2000)
-                }
-            }
+            SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+
+            // if(!port){
+            //     let p = await getPorts(setLoadBluetooth,speak);
+            //     if(p){
+            //         console.log("Bluetooth OK")
+            //         setPort(p)
+            //         setLoadBluetooth(false)
+            //         speak({text:"Rocco connecter avec succes"})
+            //         SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+            //     }else{
+            //         console.log("Bluetooth non OK")
+            //         setLoadBluetoothError(true)
+            //         setTimeout(function(){
+            //             setLoadBluetooth(false)
+            //             speak({text:"Erreur de connexion avec Rocco"})
+            //         },2000)
+            //     }
+            // }
         }catch(e)
         {
             console.log(e)
