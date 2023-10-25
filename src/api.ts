@@ -6,6 +6,7 @@ export enum HTTP_METHOD  {
 }
 export const ApiFetch = async (url:string,method:HTTP_METHOD,json?:any) => {
     try{
+        console.log(JSON.stringify(json))
         var response = await fetch(url,{
             method:method,
             body:method === HTTP_METHOD.POST ? JSON.stringify(json) : null,
@@ -17,8 +18,7 @@ export const ApiFetch = async (url:string,method:HTTP_METHOD,json?:any) => {
         if(response.ok){
             return response
         }
-        console.log(response)
-        throw new ApiFetchError("Une erreur s'est produite",response)
+        throw response
     }catch(e){
         throw e
     }

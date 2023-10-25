@@ -2,6 +2,7 @@
 export const getPorts = async (loadConnection,speak) => {
     try {
         const port = await navigator.serial.requestPort();
+        console.log(port)
         loadConnection(true);
         speak({text:"Connexion en cours avec Rocco"})
         await port.open({ baudRate: 9600 });

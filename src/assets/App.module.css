@@ -34,12 +34,14 @@
 .bg {
   position: fixed;
   top:0;
-  width:100%;
+  width: 100%;
+  max-width:100%;
+  filter: grayscale(50%) brightness(50%);
   min-height: 100vh;
-  aspect-ratio: 16 / 9;
   background: url("image/background_flat.jpg");
   background-position:center;
   background-size:cover;
+  background-repeat: no-repeat;
   z-index: -1;
 }
 

@@ -13,7 +13,7 @@ import { getPorts, sendRoccoData } from "../arduino/arduino";
 import { LoadingBluetoothConnection } from "../arduino/LoadingConnection";
 // Icone
 import { Mic,MicOff,Send,Radio } from "react-feather";
-import { DARK, LIGHT, startAnimation } from "../context/ThemeContext";
+import { DARK, LIGHT, startAnimation, ThemeContext } from "../context/ThemeContext";
 // Mot dite par l'utilisateur et repondu par la machine
 type MsgProps = {
     user:boolean;
@@ -50,7 +50,9 @@ const Msg:FunctionComponent<PropsWithChildren<MsgProps>> = ({children,user = tru
 export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => {
 
     const { speak } = useSpeechSynthesis();
-    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,switchTheme,theme,clearMessage } = useContext(DialogContext);
+    const { dialogs, sendRequest, getMeteo, id, loading, replyUser,clearMessage } = useContext(DialogContext);
+    
+    const { switchTheme,theme } = useContext(ThemeContext);
     const [listen, setListen] = useState(false)
     const [loadBluetooth, setLoadBluetooth] = useState(false);
     const [loadBluetoothError,setLoadBluetoothError] = useState(false)
@@ -129,11 +131,12 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
                     await SpeechRecognition.stopListening()
                     const reponse = ["A bientot", "Au revoir et bonne journee", "Au revoir et sois sage", "On se dit a bientot", "bye bye et a plus tard "]
                     if(port){
-                        const writer = await port.writable.getWriter();
-                        let enc = new TextEncoder();
-                        await writer.write(enc.encode('100'));
-                        writer.releaseLock();
-                        await port.close()
+                        // const writer = await port.writable.getWriter();
+                        // let enc = new TextEncoder();
+                        // await writer.write(enc.encode('100'));
+                        // writer.releaseLock();
+                        // await port.close()
+                        await exitRoccoConnection()
                         replyUser("Rocco déconnécté")
                     }
                     const rand = Math.floor(Math.random() * reponse.length)
@@ -215,7 +218,7 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
         {
             command: ["Change * thème"],
             callback: () => {
-                speak({text:`Changement de theme en ${theme === DARK ? "jour" : "nuit"}`})
+                speak({text:`Changement de theme en ${theme === DARK ? "nuit" : "jour"}`})
                 theme === DARK ? switchTheme(LIGHT) : switchTheme(DARK)
             }
         }
@@ -231,13 +234,18 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
 
     // Deconnecte ROCCO
     const exitRoccoConnection = async () => {
-        if(port){
-            const writer = await port.writable.getWriter();
-
-            let enc = new TextEncoder();
-            await writer.write(enc.encode('100'));
-            writer.releaseLock();
-            await port.close()
+        try{
+            if(port){
+                const writer = await port.writable.getWriter();
+    
+                let enc = new TextEncoder();
+                await writer.write(enc.encode('100'));
+                writer.releaseLock();
+                port.close()
+            }
+        }catch(e)
+        {
+            console.log(e)
         }
     }
 
@@ -245,31 +253,36 @@ export const Dialog:FunctionComponent<DialogProps> = ({ onShow, onArtiste }) => 
         setListen(false)
         SpeechRecognition.stopListening()
         setLoadBluetoothError(false)
-        if(!port){
-            let p = await getPorts(setLoadBluetooth,speak);
-            if(p){
-                console.log("Bluetooth OK")
-                setPort(p)
-                setLoadBluetooth(false)
-                speak({text:"Rocco connecter avec succes"})
-                SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-            }else{
-                console.log("Bluetooth non OK")
-                setLoadBluetoothError(true)
-                setTimeout(function(){
+        try{
+            if(!port){
+                let p = await getPorts(setLoadBluetooth,speak);
+                if(p){
+                    console.log("Bluetooth OK")
+                    setPort(p)
                     setLoadBluetooth(false)
-                    speak({text:"Erreur de connexion avec Rocco"})
+                    speak({text:"Rocco connecter avec succes"})
                     SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
-                },2000)
+                }else{
+                    console.log("Bluetooth non OK")
+                    setLoadBluetoothError(true)
+                    setTimeout(function(){
+                        setLoadBluetooth(false)
+                        speak({text:"Erreur de connexion avec Rocco"})
+                        SpeechRecognition.startListening({ language: "fr-FR",continuous:true });
+                    },2000)
+                }
             }
+        }catch(e)
+        {
+            console.log(e)
         }
         setListen(true)
     }
-    const stopListen = () => {
+    const stopListen = async () => {
         setListen(false)
-        exitRoccoConnection()
+        await exitRoccoConnection()
         replyUser("Rocco déconnécté")
-        SpeechRecognition.stopListening()
+        await SpeechRecognition.stopListening()
         setTimeout(function(){
             clearMessage()
             },2000)

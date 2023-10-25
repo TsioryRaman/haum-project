@@ -10,8 +10,11 @@ export const LIGHT = "light";
 
 const vicious_stance = `linear-gradient(60deg, #29323c 0%, #485563 100%)`
 const premium_white = `linear-gradient(to top, #88d3ce 0%, #6e45e2 100%)`
-
-export const ThemeContext = createContext({});
+type ThemeType = {
+    switchTheme: any;
+    theme:string
+}
+export const ThemeContext = createContext<ThemeType>({switchTheme:'',theme:LIGHT});
 
 
 export const startAnimation = () => {

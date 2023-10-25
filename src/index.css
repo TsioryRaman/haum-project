@@ -1,1 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Jura:wght@700&family=Karla&family=Short+Stack&display=swap');
+
+small.text-danger {
+    position: absolute;
+  }

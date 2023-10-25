@@ -1,18 +1,16 @@
 import { useContext, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import { UserContext } from "../../context/UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Lottie from "react-lottie";
 import { defaultOptions } from "./Home";
-import ispm from "../../assets/image/ispm.png";
 
 export const Login = () => {
-    const { user, login } = useContext(UserContext);
+    const { login } = useContext(UserContext);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [validate, setValidate] = useState<boolean>(true);
-    const navigate = useNavigate();
 
     const handleChange = (e: any) => {
         if (e.target.name === "username") {
@@ -49,7 +47,7 @@ export const Login = () => {
             }}
         >
             <motion.div
-                className="col-md-8 col-lg-6 col-xl-4 col-sm-12"
+                className="col-md-8 col-lg-6 col-xl-4 col-sm-10 col-12"
                 initial={{ opacity: 0, y: -80 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
@@ -115,39 +113,19 @@ export const Login = () => {
                             O
                         </motion.span>
                     </motion.p>
-                    <motion.p
-                        initial={{opacity: 0, transform:"translateZ(0px)"}}
-                        animate={{opacity: 1, transform:"translateZ(-150px)"}}
-                        style={{
-                            fontSize: "3rem",
-                            fontWeight: "bold",
-                            fontFamily: "Karla",
-                            transform: "translateZ(-150px)",
-                        }}
-                        transition={{duration:0.8, delay:2.2}}
-                    >
-                        Bienvenue
-                    </motion.p>
                 </motion.div>
-                <Card style={{ padding: "4.5rem 2rem",position:"relative",background:"transparent",border:"none",borderRadius:"8px" }}>
-                    <motion.div 
-                    style={{background:"#1a1e7f",position:"absolute",top:"0",bottom:"0",right:"0",width:"100%",height:"100%",zIndex:-1,filter:"blur(4px)",borderRadius:"8px"}}>
-
-                    </motion.div>
-                    <motion.div className="d-flex flex-column justify-content-between" style={{marginBottom:"1rem"}}>
+                <motion.div className="d-flex flex-column justify-content-between" style={{marginBottom:"1rem"}}>
                         <Lottie
                             options={defaultOptions}
                             height={100}
                             width={100}
                         />
-                        {/* <img
-                            src={ispm}
-                            alt="logo__ispm"
-                            height={100}
-                            width={100}
-                            style={{ filter: "brightness(90%)" }}
-                        /> */}
                         <motion.h3 className="text-center" style={{marginTop:"1rem"}}>Identification</motion.h3>
+                    </motion.div>
+                <Card style={{ padding: "4.5rem 2rem",position:"relative",background:"transparent",border:"none",borderRadius:"8px" }}>
+                    <motion.div 
+                    style={{background:"#1a1e7f",position:"absolute",top:"0",bottom:"0",right:"0",width:"100%",height:"100%",zIndex:-1,filter:"blur(4px)",borderRadius:"8px"}}>
+
                     </motion.div>
                     <Form validated={!validate} onSubmit={submit}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">

@@ -44,10 +44,10 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
-    const signup = async (email, lastname,address,username, password) => {
+    const signup = async (email, lastname,address,username, password,passkey) => {
         try {
             setLoading(true)
-            const response = await ApiFetch("http://localhost:3000/user", HTTP_METHOD.POST, { username, password,email, lastname,address})
+            const response = await ApiFetch("http://localhost:3000/user", HTTP_METHOD.POST, { username, password,email, lastname,address,rocco:{passKey:passkey}})
             console.log(response)
             if(response.ok){
                 const data = await response.json()

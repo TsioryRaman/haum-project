@@ -8,19 +8,30 @@ import { defaultOptions } from "./Home";
 import ispm from "../../assets/image/ispm.png";
 import style from "../../assets/signup.module.css"
 
+interface ErrorType {
+    username:string|null;
+    password:string|null;
+    email:string|null;
+    passKey:string|null;
+}
+
 export const Signup = () => {
     const { signup,loading } = useContext(UserContext);
     const [username, setUsername] = useState<string>("tsiory");
     const [password, setPassword] = useState<string>("maxtor123*");
     const [lastname, setLastname] = useState<string>("tsiory");
+    
+    const [key, setKey] = useState<string>("1234-1234-1234-1234");
     const [address, setAddress] = useState<string>("Lot IVK 11");
     const [confirmPassword, setConfirmPassword] =
         useState<string>("maxtor123*");
     const [email, setEmail] = useState<string>("tsiory@gmail.com");
     const [validate, setValidate] = useState<boolean>(true);
+    const [error,setError] = useState<ErrorType | null>({username:null,password:null,email:null,passKey:null})
     const navigate = useNavigate();
 
     const handleChange = (e: any) => {
+        setError(null)
         switch (e.target.name) {
             case "username":
                 setUsername(e.target.value);
@@ -40,6 +51,15 @@ export const Signup = () => {
             case "address":
                 setAddress(e.target.value);
                 break;
+            case "passKey":
+                setKey(e.target.value)
+                // const _key = key
+                // if(_key.length >= 4)
+                // {
+                //     setKey(k => k + "-")
+                // }
+                // _key.split('-')
+                break;
         }
     };
 
@@ -52,11 +72,14 @@ export const Signup = () => {
                 data.get("lastname"),
                 data.get("address"),
                 data.get("username"),
-                data.get("password")
+                data.get("password"),
+                data.get('passKey')
             );
             setValidate(true);
-        } catch (e) {
+        } catch (e:any) {
             setValidate(false);
+            const error = await e.json();
+            setError(error)
         }
     };
 
@@ -107,7 +130,7 @@ export const Signup = () => {
             <motion.div
                     style={{background:"#1a1e7f",position:"absolute",top:"0",bottom:"0",right:"0",width:"100%",height:"100%",zIndex:-1}}></motion.div>
                     <motion.h3 initial={{opacity:0}} transition={{duration:0.8,delay:0.6}} animate={{opacity:1}} className={`text-white text-left shadow rounded text-uppercase ${style.header__signup}`}>Enregistrement <span style={{fontFamily:"Jura"}}>ROCCO</span></motion.h3>
-                    <Form validated={!validate} onSubmit={submit}>
+                    <Form onSubmit={submit}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -117,9 +140,10 @@ export const Signup = () => {
                                 value={email}
                                 placeholder="Email"
                             />
-                            {!validate && (
+                            {!validate && error?.email && (
                                 <Form.Text className="text-danger">
-                                    Entrer un nom d'utilisateur valide
+                                    
+                                    {error?.email}
                                 </Form.Text>
                             )}
                         </Form.Group>
@@ -132,9 +156,10 @@ export const Signup = () => {
                                 value={username}
                                 placeholder="username"
                             />
-                            {!validate && (
+                            {!validate && error?.username && (
                                 <Form.Text className="text-danger">
-                                    Entrer un nom d'utilisateur valide
+                                    
+                                    {error?.username}
                                 </Form.Text>
                             )}
                         </Form.Group>
@@ -147,11 +172,6 @@ export const Signup = () => {
                                 value={lastname}
                                 placeholder="lastname"
                             />
-                            {!validate && (
-                                <Form.Text className="text-danger">
-                                    Entrer un nom d'utilisateur valide
-                                </Form.Text>
-                            )}
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Adresse</Form.Label>
@@ -162,11 +182,6 @@ export const Signup = () => {
                                 value={address}
                                 placeholder="Adresse"
                             />
-                            {!validate && (
-                                <Form.Text className="text-danger">
-                                    Entrer une adresse valide
-                                </Form.Text>
-                            )}
                         </Form.Group>
 
                         <Form.Group
@@ -181,11 +196,6 @@ export const Signup = () => {
                                 type="password"
                                 placeholder="Mot de passe"
                             />
-                            {!validate && (
-                                <Form.Text className="text-danger">
-                                    Entrer un mot de passe valide
-                                </Form.Text>
-                            )}
                         </Form.Group>
                         <Form.Group
                             className="mb-3"
@@ -201,9 +211,24 @@ export const Signup = () => {
                                 type="password"
                                 placeholder="Confirmer votre mot de passe"
                             />
-                            {!validate && (
+                        </Form.Group>
+                        <Form.Group
+                            className="mb-3 pb-8"
+                            controlId="formKey"
+                        >
+                            <Form.Label>
+                                Entrer votre cle de produit
+                            </Form.Label>
+                            <Form.Control
+                                value={key}
+                                name="passKey"
+                                onChange={handleChange}
+                                type="text"
+                                placeholder="Entrer votre cle de produit"
+                            />
+                            {!validate && error?.passKey && (
                                 <Form.Text className="text-danger">
-                                    Entrer un mot de passe valide
+                                    {error?.passKey}
                                 </Form.Text>
                             )}
                         </Form.Group>
